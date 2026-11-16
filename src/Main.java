@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.Map;
 
 import actors.AdultRabbit;
 import actors.BabyRabbit;
@@ -7,27 +8,27 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import util.io.FileIO;
+import util.io.WorldBuilder;
 
 public class Main {
 
+    static WorldBuilder worldBuilder = new WorldBuilder();
+    static FileIO fileIO = new FileIO();
+
     public static void main(String[] args) {
-        int size = 5;
-        Program p = new Program(size, 800, 3000);
-        p.setDisplayInformation(AdultRabbit.class, new DisplayInformation(Color.darkGray, "rabbit-large"));
-        p.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.gray, "rabbit-small"));
+        Map<String,String> worldInfoMap = fileIO.read("t1-1a.txt");
+        int size = Integer.parseInt(worldInfoMap.get("size"));
+        Program program = worldBuilder.buildProgram(size, 800, 3000);
+        
+        World w = worldBuilder.buildWorld(program.getWorld(), worldInfoMap, size);
 
-        World w = p.getWorld();
-
-        Rabbit adultRabbit = new AdultRabbit();
-        Rabbit adulRabbit2 = new AdultRabbit();
-        
-        
-        w.setTile(new Location(0, 1), adultRabbit);
-        w.setTile(new Location(0, 2), adulRabbit2);
-        
-        p.show();
+        program.show();
         while(true){
-            p.simulate();
+            program.simulate();
         }
     }
+
+
+
 }
