@@ -5,8 +5,13 @@ import itumulator.world.*;
 import java.util.*;
 
 public class Grass implements Actor {
+    private int stepCounter = 0; 
+
     @Override 
     public void act(World world){
+        if (stepCounter > 20) {
+            return; 
+        }
 
         //finder græstots placering
         Location location = world.getLocation(this);
