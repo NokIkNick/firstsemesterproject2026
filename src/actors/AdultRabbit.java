@@ -39,8 +39,15 @@ public class AdultRabbit extends Rabbit{
     }
 
     //TODO: needs to be implemented;
-    private void dig(){
+    private void dig(World world){
+        if(world.containsNonBlocking(world.getLocation(this))){
+            //TODO: add exception!
+            return;
+        }
+
         
+        
+
     }
 
     /**
