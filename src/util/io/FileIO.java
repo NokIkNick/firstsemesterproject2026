@@ -3,6 +3,9 @@ package util.io;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +19,8 @@ public class FileIO {
     public Map<String, String> read(String filename){
         Map<String, String> content = new HashMap<>();
         String line = "";
-        try (BufferedReader reader = new BufferedReader(new FileReader("data\\"+filename))) {
+        Path path = Path.of("data", filename);
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             boolean first = true;
             while((line = reader.readLine()) != null){
                 if(first){
