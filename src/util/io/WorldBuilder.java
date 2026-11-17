@@ -69,7 +69,8 @@ public class WorldBuilder {
                         world.setTile(location, new AdultRabbit());
                         break;
                     case "grass":
-                        //world.setTile(location, new Grass());
+                        if(world.containsNonBlocking(location)) continue;
+                        world.setTile(location, new Grass());
                         break;
                     default:
                         System.out.println("No specification made for type: "+type);

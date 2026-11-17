@@ -27,6 +27,8 @@ public class FileIO {
                     content.put("size", line);
                     first = false;
                 }else {
+                    if(line.isEmpty()) continue;
+
                     content.put(line.split(" ")[0], line.split(" ")[1]);
                 }
             }
