@@ -6,6 +6,7 @@ import java.util.Random;
 
 import actors.AdultRabbit;
 import actors.BabyRabbit;
+import actors.Grass;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
@@ -26,7 +27,7 @@ public class WorldBuilder {
         Program program = new Program(size, displaySize, delay);
         program.setDisplayInformation(AdultRabbit.class, new DisplayInformation(Color.darkGray, "rabbit-large"));
         program.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.gray, "rabbit-small"));
-        
+        program.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
         return program;
     }
 
@@ -66,6 +67,9 @@ public class WorldBuilder {
                 switch (type) {
                     case "rabbit":
                         world.setTile(location, new AdultRabbit());
+                        break;
+                    case "grass":
+                        //world.setTile(location, new Grass());
                         break;
                     default:
                         System.out.println("No specification made for type: "+type);
