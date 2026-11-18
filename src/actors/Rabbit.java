@@ -1,16 +1,15 @@
 package actors;
 
+import itumulator.simulator.Actor;
+import itumulator.world.Location;
+import itumulator.world.World;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Map;
-
-import itumulator.simulator.Actor;
-import itumulator.world.World;
-import itumulator.world.Location;
-
+//TODO, implement energy, and foodseeking.
 /**
  * Rabbit
  */
@@ -20,44 +19,94 @@ public abstract class Rabbit implements Actor{
     private int hunger;
     private int age;
     private int energy;
+    private int currentEnergy;
     private int maxAge;
     private Rabbithole homeHole;
+    private boolean isHome;
 
     public Rabbit(int age){
         this.hunger = 100;
         this.age = age;
+        this.homeHole = null;
         this.energy = 100;
+        currentEnergy = 100;
         this.maxAge = 60;
+        isHome = false;
     }
 
     @Override 
     public void act(World world){
-        
-        
+
         if(this.hunger <= 0 || this.age > this.maxAge){
             this.die(world);
             return;
         }
-
-        if (world.isNight()){
+        if (homeHole == null){
+            makehome(world);
+        }
+        isHomeCheck();
+        if (currentEnergy == 0 && isHome == false){
             goTowardsHome(world);
+            if (isOnEntrance(world)){
+                    homeHole.enter(homeHole.getEntrances().get(0), this, world);
+            }
+            return;
+        }
+        this.useEnergy();
+
+        if (world.isNight() && isHome == true){
+             sleep();
+        }
+        else if(world.isNight()){
+            goTowardsHome(world);//TODO throws null pointer when no home hole is present
+                if (isOnEntrance(world)){
+                    homeHole.enter(homeHole.getEntrances().get(0), this, world); //TODO should NOT only use the first hole, should check which hole rabbit is on first and use that with aiding method.
+        }
+    }
+        else{
+            this.move(world);
         }
 
-        this.move(world);
+        
 
         this.age++;
     }
+    private boolean isOnEntrance(World world){
+            for (Location l:homeHole.getEntranceLocations() ){
+                if (l.equals(world.getLocation(this))){
+                    return true;
+                }
 
+            }
+            return false;
+    }
+
+    private void makehome(World world){
+        Rabbithole home = new Rabbithole();
+        homeHole = home;
+        home.makeEntrance(world.getLocation(this), world);
+    }
     /**
      * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
      * @param world
      */
+    private void isHomeCheck(){
+        if (homeHole.getRabbits().contains(this)){
+            isHome = true;
+            return;
+        }
+        isHome = false;
+    }
+
+    private void sleep(){
+        currentEnergy = energy;
+    }
     private void move(World world){
         Set<Location> emptyTiles = world.getEmptySurroundingTiles();
         if(emptyTiles.isEmpty()){
             return;
         }
-        List<Location> tiles = new ArrayList<Location>(emptyTiles);
+        List<Location> tiles = new ArrayList<>(emptyTiles);
         Location nextLocation = tiles.get(this.random.nextInt(tiles.size()));
         world.move(this, nextLocation);
     }
@@ -88,24 +137,26 @@ public abstract class Rabbit implements Actor{
 
     }
 
-    private void moveTowards(Location location,World world){
+    private void moveTowards(Location location,World world){ //TODO throws an exception
         int LocationX = location.getX();
         int LocationY = location.getY();
+        int thisLocationX = world.getLocation(this).getX();
+        int thisLocationY = world.getLocation(this).getY();
         Location newloc;
-        if (!(LocationX - world.getLocation(this).getX() == 0) && !(LocationY - world.getLocation(this).getY() == 0)){
+        if (!(LocationX - thisLocationX == 0) && !(LocationY - thisLocationY == 0)){
             //move diagonally
-            newloc = new Location(toNearestOne(LocationX - world.getLocation(this).getX()),toNearestOne(LocationY - world.getLocation(this).getY()));
+            newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY + toNearestOne(LocationY - thisLocationY));
             world.move(this, newloc);
         }
-        else if(!(LocationX - world.getLocation(this).getX() == 0)){
+        else if(!(LocationX - thisLocationX == 0)){
                 //move towards X
-                newloc = new Location(toNearestOne(LocationX - world.getLocation(this).getX()),world.getLocation(this).getY());
+                newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY);
                 world.move(this, newloc);
 
         }
-        else if(!(LocationY - world.getLocation(this).getY() == 0)){
+        else if(!(LocationY - thisLocationY == 0)){
                 //Move towards Y
-                newloc = new Location(world.getLocation(this).getX(),toNearestOne(LocationY - world.getLocation(this).getY()));
+                newloc = new Location(thisLocationX,thisLocationY + toNearestOne(LocationY - thisLocationY));
                 world.move(this, newloc);
         }
         else{
@@ -122,6 +173,13 @@ public abstract class Rabbit implements Actor{
         else{
             return 0;
         }
+    }
+    private void useEnergy(){
+        if (currentEnergy <= 0) {
+            throw new RuntimeException("Could not reduce energy, due to energy being too low."); //TODO make proper exception
+        }
+        currentEnergy = currentEnergy - 10;
+
     }
 
 

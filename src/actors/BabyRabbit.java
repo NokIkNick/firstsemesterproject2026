@@ -6,9 +6,10 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 public class BabyRabbit extends Rabbit{
-
+    private Rabbithole homeHole;
     public BabyRabbit(){
         super(0);
+        this.homeHole = null;
     }
 
     @Override 

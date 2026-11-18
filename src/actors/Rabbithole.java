@@ -21,6 +21,14 @@ public class Rabbithole implements NonBlocking{
         entrances.add(e);
         tunnelCheck();
     }
+    public List<Location> getEntranceLocations(){
+        List<Location> entranceLocations = new ArrayList<>();
+        for (Entrancehole e : entrances) {
+            entranceLocations.add(e.getlocation());
+        }
+
+        return entranceLocations;
+    }
 
     public void addToRabbitHole(Actor actor){
         Rabbits.add(actor);
@@ -46,6 +54,9 @@ public class Rabbithole implements NonBlocking{
         }
         exit.leave(actor, world);
 
+    }
+    public void enter(Entrancehole entrance, Actor actor, World world){
+        entrance.Enter(actor, world);
     }
 
 

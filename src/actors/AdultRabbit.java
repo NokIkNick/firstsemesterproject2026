@@ -1,14 +1,13 @@
 package actors;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-
 import itumulator.world.Location;
 import itumulator.world.World;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class AdultRabbit extends Rabbit{
-    
+    private Rabbithole homeHole;
     private int reproductionTimer;
     private int detectionRange;
 
@@ -16,6 +15,7 @@ public class AdultRabbit extends Rabbit{
         super(1);
         this.reproductionTimer = 0;
         this.detectionRange = 1;
+        homeHole = null;
     }
 
 
