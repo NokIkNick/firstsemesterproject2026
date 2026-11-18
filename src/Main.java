@@ -2,7 +2,7 @@ import java.util.Map;
 
 import itumulator.executable.Program;
 import itumulator.world.World;
-import silkenco.util.io.WorldBuilder;
+import silkenco.util.WorldBuilder;
 import silkenco.util.io.FileIO;
 
 

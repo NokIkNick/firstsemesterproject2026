@@ -1,4 +1,4 @@
-package silkenco.util.io;
+package silkenco.util;
 
 import java.awt.Color;
 import java.util.Map;

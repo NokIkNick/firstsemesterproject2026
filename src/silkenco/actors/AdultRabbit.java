@@ -28,6 +28,11 @@ public class AdultRabbit extends Rabbit{
     public void act(World world){    
         super.act(world);
 
+        // The rabbit may have died in super.act(); a dead rabbit must not keep acting.
+        if(!world.contains(this)){
+            return;
+        }
+
         if(reproductionTimer == 0){
             AdultRabbit chosenMate = detectMate(world);
 
@@ -51,7 +56,7 @@ public class AdultRabbit extends Rabbit{
         
     }
 
-    //TODO: needs to be implemented;
+    
     private void dig(World world){
         Location location = world.getLocation(this);
         if(world.containsNonBlocking(location)){
