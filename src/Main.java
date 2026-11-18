@@ -1,15 +1,10 @@
-import java.awt.Color;
 import java.util.Map;
 
-import actors.AdultRabbit;
-import actors.BabyRabbit;
-import actors.Rabbit;
-import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
-import itumulator.world.Location;
 import itumulator.world.World;
-import util.io.FileIO;
-import util.io.WorldBuilder;
+import silkenco.util.io.WorldBuilder;
+import silkenco.util.io.FileIO;
+
 
 public class Main {
 

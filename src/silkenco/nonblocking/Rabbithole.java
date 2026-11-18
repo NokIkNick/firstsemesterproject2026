@@ -1,3 +1,4 @@
+package silkenco.nonblocking;
 import itumulator.simulator.*;
 import itumulator.world.*;
 import java.util.*;
@@ -8,7 +9,7 @@ public class Rabbithole implements NonBlocking{
     private List<Actor> Rabbits;
     private List<Entrancehole> entrances;
 
-    Rabbithole(){
+    public Rabbithole(){
         hasTunnel = false;
         Rabbits = new ArrayList<>();
         entrances = new ArrayList<>();

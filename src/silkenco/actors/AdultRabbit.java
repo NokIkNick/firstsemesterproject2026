@@ -1,4 +1,4 @@
-package actors;
+package silkenco.actors;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,15 +7,20 @@ import java.util.Set;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import silkenco.nonblocking.Rabbithole;
+
+
 public class AdultRabbit extends Rabbit{
     
     private int reproductionTimer;
     private int detectionRange;
+    private int diggingCooldown;
 
     public AdultRabbit(){
         super(1);
         this.reproductionTimer = 0;
         this.detectionRange = 1;
+        this.diggingCooldown = 0;
     }
 
 
@@ -31,8 +36,16 @@ public class AdultRabbit extends Rabbit{
             }
         }
 
+        if(this.diggingCooldown == 0){
+            this.dig(world);
+        }
+
         if(this.reproductionTimer > 0){
             this.reproductionTimer--;
+        }
+
+        if(this.diggingCooldown > 0){
+            this.diggingCooldown--;
         }
 
         
@@ -40,13 +53,15 @@ public class AdultRabbit extends Rabbit{
 
     //TODO: needs to be implemented;
     private void dig(World world){
-        if(world.containsNonBlocking(world.getLocation(this))){
-            //TODO: add exception!
+        Location location = world.getLocation(this);
+        if(world.containsNonBlocking(location)){
+            //CANT CREATE HOLE
             return;
         }
-
         
-        
+        Rabbithole hole = new Rabbithole();
+        hole.makeEntrance(location, world);
+        this.diggingCooldown = 20;
 
     }
 

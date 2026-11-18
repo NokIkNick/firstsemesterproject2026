@@ -1,15 +1,17 @@
-package util.io;
+package silkenco.util.io;
 
 import java.awt.Color;
 import java.util.Map;
 import java.util.Random;
 
-import actors.AdultRabbit;
-import actors.BabyRabbit;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import silkenco.actors.AdultRabbit;
+import silkenco.actors.BabyRabbit;
+import silkenco.nonblocking.Entrancehole;
+import silkenco.nonblocking.Rabbithole;
 
 public class WorldBuilder {
 
@@ -26,6 +28,7 @@ public class WorldBuilder {
         Program program = new Program(size, displaySize, delay);
         program.setDisplayInformation(AdultRabbit.class, new DisplayInformation(Color.darkGray, "rabbit-large"));
         program.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.gray, "rabbit-small"));
+        program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole"));
         
         return program;
     }

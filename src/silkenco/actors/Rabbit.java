@@ -1,4 +1,4 @@
-package actors;
+package silkenco.actors;
 
 import java.util.ArrayList;
 import java.util.List;
