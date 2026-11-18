@@ -26,7 +26,9 @@ public class FileIO {
                     content.put("size", line);
                     first = false;
                 }else {
-                    content.put(line.split(" ")[0], line.split(" ")[1]);
+                    if(line.isEmpty()) continue;
+
+                    content.put(line.split(" ")[0].trim(), line.split(" ")[1].trim());
                 }
             }
         } catch (IOException exception) {

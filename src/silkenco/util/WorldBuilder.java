@@ -70,6 +70,11 @@ public class WorldBuilder {
                     case "rabbit":
                         world.setTile(location, new AdultRabbit());
                         break;
+                    case "burrow":
+                        if(world.containsNonBlocking(location)) continue;
+                        
+                        world.setTile(location, new Entrancehole(location, new Rabbithole()));
+                        break;
                     default:
                         System.out.println("No specification made for type: "+type);
                         break;
