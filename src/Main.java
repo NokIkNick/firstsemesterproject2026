@@ -12,7 +12,7 @@ public class Main {
     static FileIO fileIO = new FileIO();
 
     public static void main(String[] args) {
-        Map<String,String> worldInfoMap = fileIO.read("t1-2b.txt");
+        Map<String,String> worldInfoMap = fileIO.read("t1-1c.txt");
         int size = Integer.parseInt(worldInfoMap.get("size"));
         Program program = worldBuilder.buildProgram(size, 800, 1000);
         

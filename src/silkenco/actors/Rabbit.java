@@ -3,15 +3,14 @@ package silkenco.actors;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import silkenco.nonblocking.Entrancehole;
+import silkenco.nonblocking.Rabbithole;
+import silkenco.util.Locator;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import silkenco.enums.RabbitState;
-import silkenco.nonblocking.Entrancehole;
-import silkenco.nonblocking.Rabbithole;
 //TODO, implement energy, and foodseeking.
 /**
  * Rabbit
@@ -56,7 +55,25 @@ public abstract class Rabbit implements Actor{
             }
             return;
         }
+        //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
+        if(hunger<=40){
+            if(world.containsNonBlocking(world.getLocation(this))){
+               Object object = world.getNonBlocking(world.getLocation(this));
+               if (object instanceof Grass){
+                this.eat((Grass)object, world);
+                return;
+               }
+            }
+            Grass nearestGrass = Locator.locateClosest(world,world.getLocation(this), Grass.class);
+            System.out.println(world.getLocation(this).equals(world.getLocation(nearestGrass)));
+            if(world.getLocation(this).equals(world.getLocation(nearestGrass))){
+            this.eat(nearestGrass, world);
+            }else{
+            this.moveTowards(world.getLocation(nearestGrass), world);
+         }
         
+         return;
+         }
 
         if (world.isNight() && isHome){
              sleep();
@@ -81,12 +98,20 @@ public abstract class Rabbit implements Actor{
             this.move(world);
         }
         if (energy>0){
-        this.useEnergy();
+            this.useEnergy();
         }
-        
+
+        hunger-=4 ; 
 
         
     }
+
+    private void eat(Grass grass, World world){
+        System.out.println("VI SPISER");
+        grass.getEaten(world);
+        hunger = 100;
+    }
+
     private boolean isOnEntrance(World world){
             for (Location l:homeHole.getEntranceLocations() ){
                 if(world.contains(this)){
@@ -130,32 +155,8 @@ public abstract class Rabbit implements Actor{
     }
     //moves towards the closest entrance in homeHole
     private void goTowardsHome(World world){
-        Entrancehole closest = homeHole.getEntrances().get(0);
-        if(homeHole.hasTunnel()){
-            //find closest hole
-            List<Entrancehole> entrances = homeHole.getEntrances();
-            Map<Entrancehole, Double> Distances = new HashMap<>();
-            for (Entrancehole e: entrances){
-                Location rabbitLocation = world.getLocation(this);
-                int xdiff = Math.abs(rabbitLocation.getX() - e.getlocation().getX());
-                int ydiff = Math.abs(rabbitLocation.getY() - e.getlocation().getY());
-                double distance = Math.sqrt((xdiff^2 * ydiff^2));
-                Distances.put(e, distance);
-            }   
-            double lowestdist = 9999;
-            for (Entrancehole e: Distances.keySet()){
-                if (lowestdist>Distances.get(e)){
-                    lowestdist=Distances.get(e);
-                    closest = e;
-                }
-            }
-        }
-        try{moveTowards(closest.getlocation(),world);}
-        catch(Exception e){
-
-        }
-
-
+        Entrancehole closest = Locator.locateClosest(world, world.getLocation(this), Entrancehole.class);
+        moveTowards(closest.getlocation(),world);
     }
 
     private void moveTowards(Location location,World world){ //TODO throws an exception

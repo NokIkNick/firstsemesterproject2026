@@ -50,4 +50,10 @@ public class Grass implements Actor, NonBlocking{
 
         }  
     } 
+
+    public void getEaten(World world){
+        world.delete(this);
+    }
+
+
 }
