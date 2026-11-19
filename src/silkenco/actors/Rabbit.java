@@ -5,6 +5,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import silkenco.nonblocking.Entrancehole;
 import silkenco.nonblocking.Rabbithole;
+import silkenco.actors.Grass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +59,17 @@ public abstract class Rabbit implements Actor{
             }
             return;
         }
+        //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
+        if(hunger<=40){
+            if(world.getLocation(this).equals(world.getLocation(locateClosest(Grass)))){
+            this.eat(locateClosest(Grass), world);
+            }else{
+            this.moveTowards(world.getLocation(locateClosest(Grass)), world);
+         }
+         return;
         
+         }
+            return;
 
         if (world.isNight() && isHome == true){
              sleep();
@@ -74,11 +85,17 @@ public abstract class Rabbit implements Actor{
             this.move(world);
         }
         this.useEnergy();
-
+        hunger-=4 ; 
         
 
         
     }
+
+    private void eat(Grass grass, World world){
+        grass.getEaten(world);
+        hunger = 100;
+    }
+
     private boolean isOnEntrance(World world){
             for (Location l:homeHole.getEntranceLocations() ){
                 if (l.equals(world.getLocation(this))){
