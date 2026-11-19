@@ -62,15 +62,23 @@ public abstract class Rabbit implements Actor{
         }
         //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
         if(hunger<=40){
-            if(world.getLocation(this).equals(world.getLocation(locateClosest(Grass)))){
-            this.eat(locateClosest(Grass), world);
+            if(world.containsNonBlocking(world.getLocation(this))){
+               Object object = world.getNonBlocking(world.getLocation(this));
+               if (object instanceof Grass){
+                this.eat((Grass)object, world);
+                return;
+               }
+            }
+            Grass nearestGrass = Locator.locateClosest(world,world.getLocation(this), Grass.class);
+            System.out.println(world.getLocation(this).equals(world.getLocation(nearestGrass)));
+            if(world.getLocation(this).equals(world.getLocation(nearestGrass))){
+            this.eat(nearestGrass, world);
             }else{
-            this.moveTowards(world.getLocation(locateClosest(Grass)), world);
+            this.moveTowards(world.getLocation(nearestGrass), world);
          }
-         return;
         
+         return;
          }
-            return;
 
         if (world.isNight() && isHome == true){
              sleep();
@@ -86,13 +94,14 @@ public abstract class Rabbit implements Actor{
             this.move(world);
         }
         this.useEnergy();
-        hunger-=4 ; 
+        hunger-=20 ; 
         
 
         
     }
 
     private void eat(Grass grass, World world){
+        System.out.println("VI SPISER");
         grass.getEaten(world);
         hunger = 100;
     }

@@ -13,6 +13,7 @@ public class Locator {
      */
     public static <T> T locateClosest(World world, Location origin, Class<T> target){
         Set<Location> surroundingTiles = world.getSurroundingTiles(origin, world.getSize());
+        surroundingTiles.add(origin);
         Set<T> foundTargets = world.getAll(target, surroundingTiles);
         T closest = null;
         double lowestDist = Double.MAX_VALUE;
