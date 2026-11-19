@@ -1,15 +1,10 @@
-import java.awt.Color;
 import java.util.Map;
 
-import actors.AdultRabbit;
-import actors.BabyRabbit;
-import actors.Rabbit;
-import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
-import itumulator.world.Location;
 import itumulator.world.World;
-import util.io.FileIO;
-import util.io.WorldBuilder;
+import silkenco.util.WorldBuilder;
+import silkenco.util.io.FileIO;
+
 
 public class Main {
 
@@ -17,7 +12,7 @@ public class Main {
     static FileIO fileIO = new FileIO();
 
     public static void main(String[] args) {
-        Map<String,String> worldInfoMap = fileIO.read("t1-1c.txt");
+        Map<String,String> worldInfoMap = fileIO.read("t1-1a.txt");
         int size = Integer.parseInt(worldInfoMap.get("size"));
         Program program = worldBuilder.buildProgram(size, 800, 3000);
         

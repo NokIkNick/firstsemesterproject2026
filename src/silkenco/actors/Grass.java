@@ -1,4 +1,4 @@
-package actors;
+package silkenco.actors;
 
 import itumulator.simulator.Actor;
 import itumulator.world.*; 

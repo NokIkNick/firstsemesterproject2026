@@ -1,16 +1,17 @@
-package util.io;
+package silkenco.util;
 
 import java.awt.Color;
 import java.util.Map;
 import java.util.Random;
-
-import actors.AdultRabbit;
-import actors.BabyRabbit;
-import actors.Grass;
+import silkenco.actors.Grass;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import silkenco.actors.AdultRabbit;
+import silkenco.actors.BabyRabbit;
+import silkenco.nonblocking.Entrancehole;
+import silkenco.nonblocking.Rabbithole;
 
 public class WorldBuilder {
 
@@ -28,6 +29,7 @@ public class WorldBuilder {
         program.setDisplayInformation(AdultRabbit.class, new DisplayInformation(Color.darkGray, "rabbit-large"));
         program.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.gray, "rabbit-small"));
         program.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
+        program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole"));
         return program;
     }
 
@@ -71,6 +73,10 @@ public class WorldBuilder {
                     case "grass":
                         if(world.containsNonBlocking(location)) continue;
                         world.setTile(location, new Grass());
+                        break;
+                    case "burrow":
+                        if(world.containsNonBlocking(location)) continue;
+                        world.setTile(location, new Entrancehole(location, new Rabbithole()));
                         break;
                     default:
                         System.out.println("No specification made for type: "+type);

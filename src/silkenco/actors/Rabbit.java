@@ -1,4 +1,4 @@
-package actors;
+package silkenco.actors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +30,12 @@ public abstract class Rabbit implements Actor{
 
     @Override 
     public void act(World world){
-        this.move(world);
-        
-        if(this.hunger <= 0 || this.age > this.maxAge){
+        if(this.hunger <= 0 || this.age >= this.maxAge){
             this.die(world);
+            return;
         }
 
+        this.move(world);
         this.age++;
     }
 
@@ -64,5 +64,9 @@ public abstract class Rabbit implements Actor{
 
     public int getMaxAge(){
         return this.maxAge;
+    }
+
+    public void setHunger(int hunger){
+        this.hunger = hunger;
     }
 }
