@@ -94,7 +94,8 @@ public abstract class Rabbit implements Actor{
             this.move(world);
         }
         this.useEnergy();
-        hunger-=20 ; 
+
+        hunger-=4 ; 
         
 
         
