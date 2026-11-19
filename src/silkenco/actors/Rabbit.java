@@ -5,6 +5,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import silkenco.nonblocking.Entrancehole;
 import silkenco.nonblocking.Rabbithole;
+import silkenco.util.Locator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,29 +121,8 @@ public abstract class Rabbit implements Actor{
     }
     //moves towards the closest entrance in homeHole
     private void goTowardsHome(World world){
-        Entrancehole closest = homeHole.getEntrances().get(0);
-        if(homeHole.hasTunnel()){
-            //find closest hole
-            List<Entrancehole> entrances = homeHole.getEntrances();
-            Map<Entrancehole, Double> Distances = new HashMap<>();
-            for (Entrancehole e: entrances){
-                Location rabbitLocation = world.getLocation(this);
-                int xdiff = Math.abs(rabbitLocation.getX() - e.getlocation().getX());
-                int ydiff = Math.abs(rabbitLocation.getY() - e.getlocation().getY());
-                double distance = Math.sqrt((xdiff^2 * ydiff^2));
-                Distances.put(e, distance);
-            }   
-            double lowestdist = 9999;
-            for (Entrancehole e: Distances.keySet()){
-                if (lowestdist>Distances.get(e)){
-                    lowestdist=Distances.get(e);
-                    closest = e;
-                }
-            }
-        }
+        Entrancehole closest = Locator.locateClosest(world, world.getLocation(this), Entrancehole.class);
         moveTowards(closest.getlocation(),world);
-
-
     }
 
     private void moveTowards(Location location,World world){ //TODO throws an exception
