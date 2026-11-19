@@ -36,28 +36,31 @@ public abstract class Rabbit implements Actor{
 
     @Override 
     public void act(World world){
-
+        
         if(this.hunger <= 0 || this.age > this.maxAge){
             this.die(world);
             return;
         }
+        this.age++;
         if (homeHole == null){
             makehome(world);
+            return; //does not move after making a new hole
         }
         isHomeCheck();
-        if (currentEnergy == 0 && isHome == false){
+        if (currentEnergy <= 0 && isHome == false){
             goTowardsHome(world);
             if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world);
             }
             return;
         }
-        this.useEnergy();
+        
 
         if (world.isNight() && isHome == true){
              sleep();
+             return;
         }
-        else if(world.isNight()){
+        else if(world.isNight() && isHome == false){ //Redundant kode for læsbarhed, i det isHome altid er false her.
             goTowardsHome(world);//TODO throws null pointer when no home hole is present
                 if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world); //TODO should NOT only use the first hole, should check which hole rabbit is on first and use that with aiding method.
@@ -66,10 +69,11 @@ public abstract class Rabbit implements Actor{
         else{
             this.move(world);
         }
+        this.useEnergy();
 
         
 
-        this.age++;
+        
     }
     private boolean isOnEntrance(World world){
             for (Location l:homeHole.getEntranceLocations() ){

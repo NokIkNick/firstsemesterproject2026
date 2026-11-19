@@ -27,7 +27,7 @@ public class BabyRabbit extends Rabbit{
      * Makes the BabyRabbit grow up, saving its location, removing it, then replacing it with an AdultRabbit, finally deleting the BabyRabbit for good. 
      * @param world
      */
-    private void grow(World world){
+    private void grow(World world){ //TODO does not work if rabbit is home
         Location currentLocation = world.getLocation(this);
         world.remove(this);
         world.setTile(currentLocation, new AdultRabbit());
