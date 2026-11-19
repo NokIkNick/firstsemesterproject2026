@@ -1,8 +1,11 @@
-package actors;
+package silkenco.actors;
 
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import silkenco.nonblocking.Entrancehole;
+import silkenco.nonblocking.Rabbithole;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +44,7 @@ public abstract class Rabbit implements Actor{
             this.die(world);
             return;
         }
+
         this.age++;
         if (homeHole == null){
             makehome(world);
@@ -197,5 +201,9 @@ public abstract class Rabbit implements Actor{
 
     public int getMaxAge(){
         return this.maxAge;
+    }
+
+    public void setHunger(int hunger){
+        this.hunger = hunger;
     }
 }

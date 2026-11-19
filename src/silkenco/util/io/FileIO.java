@@ -1,7 +1,6 @@
-package util.io;
+package silkenco.util.io;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -27,7 +26,9 @@ public class FileIO {
                     content.put("size", line);
                     first = false;
                 }else {
-                    content.put(line.split(" ")[0], line.split(" ")[1]);
+                    if(line.isEmpty()) continue;
+
+                    content.put(line.split(" ")[0].trim(), line.split(" ")[1].trim());
                 }
             }
         } catch (IOException exception) {

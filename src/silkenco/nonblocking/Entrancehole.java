@@ -1,4 +1,4 @@
-package actors;
+package silkenco.nonblocking;
 
 import itumulator.simulator.*;
 import itumulator.world.*;
@@ -9,7 +9,7 @@ public class Entrancehole implements NonBlocking{
     private Rabbithole hole;
     //deterioration timer
     int time;
-    Entrancehole(Location location, Rabbithole hole){
+    public Entrancehole(Location location, Rabbithole hole){
         this.location=location;
         this.hole=hole;
         time = 0;

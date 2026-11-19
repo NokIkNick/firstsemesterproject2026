@@ -1,9 +1,10 @@
-package actors;
+package silkenco.actors;
 
 
 
 import itumulator.world.Location;
 import itumulator.world.World;
+import silkenco.nonblocking.Rabbithole;
 
 public class BabyRabbit extends Rabbit{
     private Rabbithole homeHole;

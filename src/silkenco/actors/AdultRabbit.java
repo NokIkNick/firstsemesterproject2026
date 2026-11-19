@@ -1,4 +1,4 @@
-package actors;
+package silkenco.actors;
 
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -6,22 +6,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import silkenco.nonblocking.Rabbithole;
+
+
 public class AdultRabbit extends Rabbit{
     private Rabbithole homeHole;
     private int reproductionTimer;
     private int detectionRange;
+    private int diggingCooldown;
 
     public AdultRabbit(){
         super(1);
         this.reproductionTimer = 0;
         this.detectionRange = 1;
-        homeHole = null;
+        this.homeHole = null;
+        this.diggingCooldown = 0;
     }
 
 
     @Override
     public void act(World world){    
         super.act(world);
+
+        // The rabbit may have died in super.act(); a dead rabbit must not keep acting.
+        if(!world.contains(this)){
+            return;
+        }
 
         if(reproductionTimer == 0){
             AdultRabbit chosenMate = detectMate(world);
@@ -31,16 +41,33 @@ public class AdultRabbit extends Rabbit{
             }
         }
 
+        if(this.diggingCooldown == 0){
+            this.dig(world);
+        }
+
         if(this.reproductionTimer > 0){
             this.reproductionTimer--;
+        }
+
+        if(this.diggingCooldown > 0){
+            this.diggingCooldown--;
         }
 
         
     }
 
-    //TODO: needs to be implemented;
-    private void dig(){
+    
+    private void dig(World world){
+        Location location = world.getLocation(this);
+        if(world.containsNonBlocking(location)){
+            //CANT CREATE HOLE
+            return;
+        }
         
+        Rabbithole hole = new Rabbithole();
+        hole.makeEntrance(location, world);
+        this.diggingCooldown = 20;
+
     }
 
     /**
