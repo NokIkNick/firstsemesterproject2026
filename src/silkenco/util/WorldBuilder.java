@@ -29,7 +29,7 @@ public class WorldBuilder {
         program.setDisplayInformation(AdultRabbit.class, new DisplayInformation(Color.darkGray, "rabbit-large"));
         program.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.gray, "rabbit-small"));
         program.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
-        program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole"));
+        program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole-small"));
         return program;
     }
 
