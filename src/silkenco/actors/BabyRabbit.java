@@ -4,18 +4,16 @@ package silkenco.actors;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-import silkenco.nonblocking.Rabbithole;
+import silkenco.enums.RabbitState;
 
 public class BabyRabbit extends Rabbit{
-    private Rabbithole homeHole;
     public BabyRabbit(){
         super(0);
-        this.homeHole = null;
     }
 
     @Override 
     public void act(World world){
-        if(super.getAge() == 10){
+        if(super.getAge() == 10 && super.currentState == RabbitState.Roaming){
             this.grow(world);
         }else {
             super.act(world);

@@ -5,12 +5,11 @@ import itumulator.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import silkenco.enums.RabbitState;
 import silkenco.nonblocking.Rabbithole;
 
 
 public class AdultRabbit extends Rabbit{
-    private Rabbithole homeHole;
     private int reproductionTimer;
     private int detectionRange;
     private int diggingCooldown;
@@ -19,13 +18,16 @@ public class AdultRabbit extends Rabbit{
         super(1);
         this.reproductionTimer = 0;
         this.detectionRange = 1;
-        this.homeHole = null;
         this.diggingCooldown = 0;
     }
 
 
     @Override
-    public void act(World world){    
+    public void act(World world){ 
+        if(this.diggingCooldown == 0 && super.homeHole == null){
+            this.dig(world);
+        }  
+
         super.act(world);
 
         // The rabbit may have died in super.act(); a dead rabbit must not keep acting.
@@ -33,7 +35,7 @@ public class AdultRabbit extends Rabbit{
             return;
         }
 
-        if(reproductionTimer == 0){
+        if(reproductionTimer == 0 && super.currentState == RabbitState.Roaming){
             AdultRabbit chosenMate = detectMate(world);
 
             if(chosenMate != null){
@@ -41,9 +43,7 @@ public class AdultRabbit extends Rabbit{
             }
         }
 
-        if(this.diggingCooldown == 0){
-            this.dig(world);
-        }
+
 
         if(this.reproductionTimer > 0){
             this.reproductionTimer--;
@@ -65,6 +65,7 @@ public class AdultRabbit extends Rabbit{
         }
         
         Rabbithole hole = new Rabbithole();
+        super.homeHole = hole;
         hole.makeEntrance(location, world);
         this.diggingCooldown = 20;
 
@@ -83,9 +84,12 @@ public class AdultRabbit extends Rabbit{
             return;
         }
         List<Location> emptyLocations = new ArrayList<>(emptyLocationsSet);
-        world.setTile(emptyLocations.get(super.random.nextInt(emptyLocationsSet.size())), new BabyRabbit());
+        BabyRabbit baby = new BabyRabbit();
+        world.setTile(emptyLocations.get(super.random.nextInt(emptyLocationsSet.size())), baby);
         chosenMate.resetReproductionTimer();
         this.resetReproductionTimer();
+        baby.setHome(homeHole);
+
     }
 
     /**

@@ -3,15 +3,15 @@ package silkenco.actors;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
-import silkenco.nonblocking.Entrancehole;
-import silkenco.nonblocking.Rabbithole;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import silkenco.enums.RabbitState;
+import silkenco.nonblocking.Entrancehole;
+import silkenco.nonblocking.Rabbithole;
 //TODO, implement energy, and foodseeking.
 /**
  * Rabbit
@@ -24,8 +24,9 @@ public abstract class Rabbit implements Actor{
     private int energy;
     private int currentEnergy;
     private int maxAge;
-    private Rabbithole homeHole;
+    protected Rabbithole homeHole;
     private boolean isHome;
+    protected RabbitState currentState;
 
     public Rabbit(int age){
         this.hunger = 100;
@@ -35,21 +36,18 @@ public abstract class Rabbit implements Actor{
         currentEnergy = 100;
         this.maxAge = 60;
         isHome = false;
+        currentState = RabbitState.Roaming;
     }
 
     @Override 
     public void act(World world){
-        
+
         if(this.hunger <= 0 || this.age > this.maxAge){
             this.die(world);
             return;
         }
 
         this.age++;
-        if (homeHole == null){
-            makehome(world);
-            return; //does not move after making a new hole
-        }
         isHomeCheck();
         if (currentEnergy <= 0 && isHome == false){
             goTowardsHome(world);
@@ -60,11 +58,20 @@ public abstract class Rabbit implements Actor{
         }
         
 
-        if (world.isNight() && isHome == true){
+        if (world.isNight() && isHome){
              sleep();
+             currentState = RabbitState.Sleeping;
              return;
         }
-        else if(world.isNight() && isHome == false){ //Redundant kode for læsbarhed, i det isHome altid er false her.
+        else if (world.isDay() && isHome) {
+            Entrancehole ranEntrance = homeHole.getEntrances().get(random.nextInt(homeHole.getEntrances().size()));
+            try{ranEntrance.leave(this, world);}
+            catch(Exception e){
+                return; //TODO VERY TEMP FIX!!!
+            }
+            currentState = RabbitState.Roaming;
+        }
+        else if(world.isNight() && world.contains(this)){ //Redundant kode for læsbarhed, i det isHome altid er false her.
             goTowardsHome(world);//TODO throws null pointer when no home hole is present
                 if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world); //TODO should NOT only use the first hole, should check which hole rabbit is on first and use that with aiding method.
@@ -73,19 +80,22 @@ public abstract class Rabbit implements Actor{
         else{
             this.move(world);
         }
+        if (energy>0){
         this.useEnergy();
-
+        }
         
 
         
     }
     private boolean isOnEntrance(World world){
             for (Location l:homeHole.getEntranceLocations() ){
+                if(world.contains(this)){
                 if (l.equals(world.getLocation(this))){
                     return true;
                 }
 
             }
+        }
             return false;
     }
 
@@ -140,7 +150,10 @@ public abstract class Rabbit implements Actor{
                 }
             }
         }
-        moveTowards(closest.getlocation(),world);
+        try{moveTowards(closest.getlocation(),world);}
+        catch(Exception e){
+
+        }
 
 
     }
@@ -193,6 +206,10 @@ public abstract class Rabbit implements Actor{
 
     private void die(World world){
         world.delete(this);
+    }
+
+    public void setHome(Rabbithole r){
+        homeHole = r;
     }
 
     public int getAge(){

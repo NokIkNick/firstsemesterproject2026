@@ -24,9 +24,11 @@ public class Entrancehole implements NonBlocking{
     }
 
     public void leave(Actor actor, World world){
+        world.setTile(location, actor);
         resetTimer();
         hole.removeFromRabbitHole(actor);
-        world.setTile(location, actor);
+        
+        
     }
 
     public Location getlocation(){
