@@ -28,7 +28,12 @@ public class FileIO {
                 }else {
                     if(line.isEmpty()) continue;
 
-                    content.put(line.split(" ")[0].trim(), line.split(" ")[1].trim());
+                    String[] read = line.split(" ");
+                    if(read.length == 3){
+                        content.put(read[0].trim(), read[1]+" "+read[2]);
+                    }else if (read.length == 2){
+                        content.put(read[0].trim(), read[1].trim());
+                    }
                 }
             }
         } catch (IOException exception) {

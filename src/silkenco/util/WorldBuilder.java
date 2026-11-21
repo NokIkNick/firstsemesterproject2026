@@ -54,7 +54,9 @@ public class WorldBuilder {
                 int low = Integer.parseInt(worldContent.get(type).split("-")[0]);
                 int high = Integer.parseInt(worldContent.get(type).split("-")[1]);
                 amountToInstansiate = random.nextInt(low, high);
-            }else {
+            }else if(worldContent.get(type).contains("(")){
+                amountToInstansiate = Integer.parseInt(worldContent.get(type).split(" ")[0]);
+            }else{
                 amountToInstansiate = Integer.parseInt(worldContent.get(type));
             }
 
