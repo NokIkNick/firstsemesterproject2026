@@ -29,4 +29,21 @@ public class Locator {
         return closest;
     }
 
+    /**
+     * 
+     * @param number
+     * @return either a 1 or a negative 1 depending on which ones the nubmer is closer to.
+     */
+    public static int toNearestOne(int number){
+        if (number<0){
+            return -1;
+        }
+        else if(number>0){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
+
 }

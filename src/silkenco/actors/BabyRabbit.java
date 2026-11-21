@@ -13,7 +13,7 @@ public class BabyRabbit extends Rabbit{
 
     @Override 
     public void act(World world){
-        if(super.getAge() == 10 && super.currentState == RabbitState.Roaming){
+        if(super.getAge() >= 10 && super.currentState == RabbitState.Roaming){
             this.grow(world);
         }else {
             super.act(world);

@@ -15,25 +15,16 @@ import silkenco.enums.RabbitState;
 /**
  * Rabbit
  */
-public abstract class Rabbit implements Actor{
+public abstract class Rabbit extends Animal{
 
     protected Random random = new Random();
-    private int hunger;
-    private int age;
-    private int energy;
-    private int currentEnergy;
-    private int maxAge;
     protected Rabbithole homeHole;
     private boolean isHome;
     protected RabbitState currentState;
 
     public Rabbit(int age){
-        this.hunger = 100;
-        this.age = age;
+        super(100, 100, 60, age);
         this.homeHole = null;
-        this.energy = 100;
-        currentEnergy = 100;
-        this.maxAge = 60;
         isHome = false;
         currentState = RabbitState.Roaming;
     }
@@ -58,27 +49,26 @@ public abstract class Rabbit implements Actor{
         //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
         if(hunger<=40){
             if(world.containsNonBlocking(world.getLocation(this))){
-               Object object = world.getNonBlocking(world.getLocation(this));
-               if (object instanceof Grass){
-                this.eat((Grass)object, world);
-                return;
-               }
+                Object object = world.getNonBlocking(world.getLocation(this));
+                if (object instanceof Grass){
+                    this.eat((Grass)object, world);
+                    return;
+                }
             }
-            Grass nearestGrass = Locator.locateClosest(world,world.getLocation(this), Grass.class);
-            System.out.println(world.getLocation(this).equals(world.getLocation(nearestGrass)));
+                Grass nearestGrass = Locator.locateClosest(world,world.getLocation(this), Grass.class);
+                System.out.println(world.getLocation(this).equals(world.getLocation(nearestGrass)));
             if(world.getLocation(this).equals(world.getLocation(nearestGrass))){
-            this.eat(nearestGrass, world);
+                this.eat(nearestGrass, world);
             }else{
-            this.moveTowards(world.getLocation(nearestGrass), world);
-         }
+                this.moveTowards(world.getLocation(nearestGrass), world);
+            }
         
-         return;
-         }
+        }
 
         if (world.isNight() && isHome){
-             sleep();
-             currentState = RabbitState.Sleeping;
-             return;
+                sleep();
+                currentState = RabbitState.Sleeping;
+                return;
         }
         else if (world.isDay() && isHome) {
             Entrancehole ranEntrance = homeHole.getEntrances().get(random.nextInt(homeHole.getEntrances().size()));
@@ -124,11 +114,14 @@ public abstract class Rabbit implements Actor{
             return false;
     }
 
-    private void makehome(World world){
-        Rabbithole home = new Rabbithole();
-        homeHole = home;
-        home.makeEntrance(world.getLocation(this), world);
-    }
+    //TODO: GAMMEL METODE, SKAL UD.
+    // private void makehome(World world){
+    //     Rabbithole home = new Rabbithole();
+    //     homeHole = home;
+    //     home.makeEntrance(world.getLocation(this), world);
+    // }
+
+
     /**
      * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
      * @param world
@@ -144,7 +137,9 @@ public abstract class Rabbit implements Actor{
     private void sleep(){
         currentEnergy = energy;
     }
-    private void move(World world){
+
+    @Override
+    protected void move(World world){
         Set<Location> emptyTiles = world.getEmptySurroundingTiles();
         if(emptyTiles.isEmpty()){
             return;
@@ -159,43 +154,48 @@ public abstract class Rabbit implements Actor{
         moveTowards(closest.getlocation(),world);
     }
 
-    private void moveTowards(Location location,World world){ //TODO throws an exception
-        int LocationX = location.getX();
-        int LocationY = location.getY();
-        int thisLocationX = world.getLocation(this).getX();
-        int thisLocationY = world.getLocation(this).getY();
-        Location newloc;
-        if (!(LocationX - thisLocationX == 0) && !(LocationY - thisLocationY == 0)){
-            //move diagonally
-            newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY + toNearestOne(LocationY - thisLocationY));
-            world.move(this, newloc);
-        }
-        else if(!(LocationX - thisLocationX == 0)){
-                //move towards X
-                newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY);
-                world.move(this, newloc);
+    //TODO: GAMMEL METODE
+    // private void moveTowards(Location location,World world){ //TODO throws an exception
+    //     int LocationX = location.getX();
+    //     int LocationY = location.getY();
+    //     int thisLocationX = world.getLocation(this).getX();
+    //     int thisLocationY = world.getLocation(this).getY();
+    //     Location newloc;
+    //     if (!(LocationX - thisLocationX == 0) && !(LocationY - thisLocationY == 0)){
+    //         //move diagonally
+    //         newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY + toNearestOne(LocationY - thisLocationY));
+    //         world.move(this, newloc);
+    //     }
+    //     else if(!(LocationX - thisLocationX == 0)){
+    //             //move towards X
+    //             newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY);
+    //             world.move(this, newloc);
 
-        }
-        else if(!(LocationY - thisLocationY == 0)){
-                //Move towards Y
-                newloc = new Location(thisLocationX,thisLocationY + toNearestOne(LocationY - thisLocationY));
-                world.move(this, newloc);
-        }
-        else{
-            //Already at target!!!
-        }
-    }
-    private int toNearestOne(int number){
-        if (number<0){
-            return -1;
-        }
-        else if(number>0){
-            return 1;
-        }
-        else{
-            return 0;
-        }
-    }
+    //     }
+    //     else if(!(LocationY - thisLocationY == 0)){
+    //             //Move towards Y
+    //             newloc = new Location(thisLocationX,thisLocationY + toNearestOne(LocationY - thisLocationY));
+    //             world.move(this, newloc);
+    //     }
+    //     else{
+    //         //Already at target!!!
+    //     }
+    // }
+
+    //TODO FLYTTET TIL LOCATOR
+    // private int toNearestOne(int number){
+    //     if (number<0){
+    //         return -1;
+    //     }
+    //     else if(number>0){
+    //         return 1;
+    //     }
+    //     else{
+    //         return 0;
+    //     }
+    // }
+
+
     private void useEnergy(){
         if (currentEnergy <= 0) {
             throw new RuntimeException("Could not reduce energy, due to energy being too low."); //TODO make proper exception
@@ -204,8 +204,8 @@ public abstract class Rabbit implements Actor{
 
     }
 
-
-    private void die(World world){
+    @Override 
+    protected void die(World world){
         world.delete(this);
     }
 

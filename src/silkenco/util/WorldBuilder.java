@@ -1,7 +1,9 @@
 package silkenco.util;
 
 import java.awt.Color;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import silkenco.actors.Grass;
 import itumulator.executable.DisplayInformation;
@@ -12,11 +14,13 @@ import silkenco.actors.AdultRabbit;
 import silkenco.actors.BabyRabbit;
 import silkenco.nonblocking.Entrancehole;
 import silkenco.nonblocking.Rabbithole;
+import silkenco.util.io.SpawnInfo;
+import silkenco.util.io.WorldInfo;
 
 public class WorldBuilder {
 
     private Random random = new Random();
-    
+
     /***
      * Instantiates a Program object, and configurates it.
      * @param size the size of the world.
@@ -35,61 +39,83 @@ public class WorldBuilder {
 
     /**
      * Builds the world, and fills it with the given content. If there is no given content, the world will just return empty.
+     * If there is not enough room for everything, as many as possible are placed.
      * @param world The world to fill.
-     * @param worldContent The content to build 
-     * @param worldSize Size of the world, the same parameter for the program.
+     * @param worldInfo The content to build, as read by FileIO.
      * @return The world object filled with content.
      */
-    public World buildWorld(World world, Map<String, String> worldContent, int worldSize){
-        if(worldContent.size() <= 0) return world;
-
-        System.out.println("building world");
-        for (String type : worldContent.keySet()) {
-            if(type.equals("size")) continue;
-
-            int instansiated = 0;
-            int amountToInstansiate;
-
-            if(worldContent.get(type).contains("-")){
-                int low = Integer.parseInt(worldContent.get(type).split("-")[0]);
-                int high = Integer.parseInt(worldContent.get(type).split("-")[1]);
-                amountToInstansiate = random.nextInt(low, high);
-            }else if(worldContent.get(type).contains("(")){
-                amountToInstansiate = Integer.parseInt(worldContent.get(type).split(" ")[0]);
-            }else{
-                amountToInstansiate = Integer.parseInt(worldContent.get(type));
+    public World buildWorld(World world, WorldInfo worldInfo){
+        for (SpawnInfo spawn : worldInfo.spawns()) {
+            String type = spawn.type();
+            if(!isKnownType(type)){
+                System.out.println("No specification made for type: "+type);
+                continue;
             }
 
-            while (instansiated < amountToInstansiate) {
-                System.out.println("Instansiating... "+instansiated);
-                int x = random.nextInt(worldSize);
-                int y = random.nextInt(worldSize);
-                Location location = new Location(x, y);
+            int amountToInstansiate = random.nextInt(spawn.min(), spawn.max() + 1);
+            List<Location> freeLocations = findFreeLocations(world, type);
 
-                if(!world.isTileEmpty(location)) continue;
+            // The first one goes to the given (x,y), if the file has one and it is free.
+            if(spawn.hasLocation() && amountToInstansiate > 0 && freeLocations.remove(spawn.location())){
+                place(world, type, spawn.location());
+                amountToInstansiate--;
+            }
 
-                switch (type) {
-                    case "rabbit":
-                        world.setTile(location, new AdultRabbit());
-                        break;
-                    case "grass":
-                        if(world.containsNonBlocking(location)) continue;
-                        world.setTile(location, new Grass());
-                        break;
-                    case "burrow":
-                        if(world.containsNonBlocking(location)) continue;
-                        world.setTile(location, new Entrancehole(location, new Rabbithole()));
-                        break;
-                    default:
-                        System.out.println("No specification made for type: "+type);
-                        break;
-                }
-                instansiated++;
-                
+            Collections.shuffle(freeLocations, random);
+            if(freeLocations.size() < amountToInstansiate){
+                System.out.println("Not enough room for " + amountToInstansiate + " " + type
+                    + ", placing " + freeLocations.size() + " instead.");
+                amountToInstansiate = freeLocations.size();
+            }
+
+            for (int i = 0; i < amountToInstansiate; i++) {
+                place(world, type, freeLocations.get(i));
             }
         }
 
         return world;
+    }
+
+    /**
+     * Finds every tile where an object of the given type could be placed.
+     * Blocking objects need a tile without another blocking object.
+     * Non-blocking objects need a tile without another non-blocking object.
+     */
+    private List<Location> findFreeLocations(World world, String type){
+        List<Location> freeLocations = new ArrayList<>();
+        for (int x = 0; x < world.getSize(); x++) {
+            for (int y = 0; y < world.getSize(); y++) {
+                Location location = new Location(x, y);
+                boolean free;
+                if(type.equals("rabbit")){
+                    free = world.isTileEmpty(location);
+                }else{
+                    free = !world.containsNonBlocking(location);
+                }
+                if(free){
+                    freeLocations.add(location);
+                }
+            }
+        }
+        return freeLocations;
+    }
+
+    private void place(World world, String type, Location location){
+        switch (type) {
+            case "rabbit":
+                world.setTile(location, new AdultRabbit());
+                break;
+            case "grass":
+                world.setTile(location, new Grass());
+                break;
+            case "burrow":
+                new Rabbithole().makeEntrance(location, world);
+                break;
+        }
+    }
+
+    private boolean isKnownType(String type){
+        return type.equals("rabbit") || type.equals("grass") || type.equals("burrow");
     }
 
 }

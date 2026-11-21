@@ -9,7 +9,7 @@ import silkenco.enums.RabbitState;
 import silkenco.nonblocking.Rabbithole;
 
 
-public class AdultRabbit extends Rabbit{
+public class AdultRabbit extends Rabbit implements IBreedable<AdultRabbit>{
     private int reproductionTimer;
     private int detectionRange;
     private int diggingCooldown;
@@ -35,7 +35,7 @@ public class AdultRabbit extends Rabbit{
             return;
         }
 
-        if(reproductionTimer == 0 && super.currentState == RabbitState.Roaming){
+        if(reproductionTimer == 0 && super.currentState == RabbitState.Roaming && world.isOnTile(this)){
             AdultRabbit chosenMate = detectMate(world);
 
             if(chosenMate != null){
@@ -77,12 +77,13 @@ public class AdultRabbit extends Rabbit{
      * @param world
      * @param chosenMate
      */
-    private void reproduce(World world, AdultRabbit chosenMate){
+    public void reproduce(World world, AdultRabbit chosenMate){
         Set<Location> emptyLocationsSet = world.getEmptySurroundingTiles();
         if(emptyLocationsSet.isEmpty()){
             //TODO: NO ROOM TO REPRODUCE, HALT.
             return;
         }
+        
         List<Location> emptyLocations = new ArrayList<>(emptyLocationsSet);
         BabyRabbit baby = new BabyRabbit();
         world.setTile(emptyLocations.get(super.random.nextInt(emptyLocationsSet.size())), baby);
@@ -97,14 +98,18 @@ public class AdultRabbit extends Rabbit{
      * @param world
      * @return The mate that the Rabbit aims to reproduce with, in the form of an AdultRabbit object.
      */
-    private AdultRabbit detectMate(World world){
+    public AdultRabbit detectMate(World world){
         Set<Location> surroundingTiles = world.getSurroundingTiles(world.getLocation(this), this.detectionRange);
         Set<AdultRabbit> surroundingRabbits = world.getAll(AdultRabbit.class, surroundingTiles);
-        if(surroundingRabbits.isEmpty()){
-            return null;
-            
+        List<AdultRabbit> listOfRabbits = new ArrayList<>();
+        for (AdultRabbit r : surroundingRabbits) {
+            if (r.getReproductionTimer() == 0) {
+                listOfRabbits.add(r);
+            }
         }
-        List<AdultRabbit> listOfRabbits = new ArrayList<>(surroundingRabbits);   
+        if (listOfRabbits.isEmpty()) {
+            return null;
+        }
         return listOfRabbits.get(super.random.nextInt(listOfRabbits.size()));
     }
 

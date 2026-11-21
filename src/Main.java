@@ -1,9 +1,7 @@
-import java.util.Map;
-
 import itumulator.executable.Program;
-import itumulator.world.World;
 import silkenco.util.WorldBuilder;
 import silkenco.util.io.FileIO;
+import silkenco.util.io.WorldInfo;
 
 
 public class Main {
@@ -12,11 +10,10 @@ public class Main {
     static FileIO fileIO = new FileIO();
 
     public static void main(String[] args) {
-        Map<String,String> worldInfoMap = fileIO.read("t2-6a.txt");
-        int size = Integer.parseInt(worldInfoMap.get("size"));
-        Program program = worldBuilder.buildProgram(size, 800, 1000);
-        
-        World w = worldBuilder.buildWorld(program.getWorld(), worldInfoMap, size);
+        WorldInfo worldInfo = fileIO.read("t1-1c.txt");
+        Program program = worldBuilder.buildProgram(worldInfo.size(), 800, 1000);
+
+        worldBuilder.buildWorld(program.getWorld(), worldInfo);
 
         program.show();
         while(true){

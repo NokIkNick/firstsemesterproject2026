@@ -18,6 +18,7 @@ public class Grass implements Actor, NonBlocking{
         //finder græstots placering
         Location location = world.getLocation(this);
 
+        //TODO: Se på fejl her.. getEmptySurroundingTiles tjekker kun blocking. 
         //findeer ledige felter omkring græstot
         Set<Location> emptyTiles = world.getEmptySurroundingTiles(location);
 
