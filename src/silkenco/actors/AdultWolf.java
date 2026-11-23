@@ -2,12 +2,6 @@ package silkenco.actors;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import silkenco.enums.AnimalState;
-import silkenco.actors.*;
-import silkenco.nonblocking.Rabbithole;
 import silkenco.nonblocking.WolfDen;
 
 public class AdultWolf extends Wolf implements IBreedable<AdultWolf>{
@@ -54,10 +48,10 @@ private int diggingCooldown;
 
 
     public AdultWolf detectMate(World world){
-         return null;
+        return null;
     }
 
-   
+
 
 }
 

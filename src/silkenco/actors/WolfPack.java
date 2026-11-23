@@ -1,7 +1,6 @@
 package silkenco.actors;
 
 import java.util.*;
-import silkenco.actors.*;
 
 public class WolfPack {
     private List<Wolf> members = new ArrayList<>();

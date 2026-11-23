@@ -3,7 +3,7 @@ package silkenco.nonblocking;
 import itumulator.simulator.*;
 import itumulator.world.*;
 
-public class Entrancehole implements NonBlocking{
+public class Entrancehole implements NonBlocking, Actor{
     private Location location;
     //The hole which the Entrancehole belongs to
     private Rabbithole hole;
@@ -35,11 +35,21 @@ public class Entrancehole implements NonBlocking{
         return location;
     }
 
+    @Override
+    public void act(World world){
+        doDeterioration(world);
+    }
+
     public void doDeterioration(World world){
+        //does not decay while there are rabbits inside the hole
+        if (!hole.getRabbits().isEmpty()){
+            return;
+        }
         time++;
         int timer = 20;
         if (time >= timer){
             world.delete(this);
+            hole.removeEntrance(this);
         }
     }
 

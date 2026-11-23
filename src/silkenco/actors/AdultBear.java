@@ -15,13 +15,11 @@ public class AdultBear extends Bear implements IBreedable<AdultBear>{
 
     @Override
     public AdultBear detectMate(World world) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'detectMate'");
     }
 
     @Override
     public void reproduce(World world, AdultBear chosenMate) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'reproduce'");
     }
 

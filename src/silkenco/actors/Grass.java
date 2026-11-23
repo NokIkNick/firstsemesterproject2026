@@ -9,8 +9,8 @@ public class Grass implements Actor, NonBlocking{
 
     @Override 
     public void act(World world){
-       stepCounter++;
-       
+        stepCounter++;
+        
         if (stepCounter < 20) {
             return; 
         }

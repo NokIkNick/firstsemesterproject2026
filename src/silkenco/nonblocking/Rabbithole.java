@@ -21,6 +21,11 @@ public class Rabbithole implements NonBlocking{
         entrances.add(e);
         tunnelCheck();
     }
+    public void removeEntrance(Entrancehole e){
+        entrances.remove(e);
+        tunnelCheck();
+    }
+
     public List<Location> getEntranceLocations(){
         List<Location> entranceLocations = new ArrayList<>();
         for (Entrancehole e : entrances) {

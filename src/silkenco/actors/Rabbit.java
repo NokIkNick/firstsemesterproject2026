@@ -11,7 +11,7 @@ import silkenco.nonblocking.Entrancehole;
 import silkenco.nonblocking.Rabbithole;
 import silkenco.util.Locator;
 
-//TODO, implement energy, and foodseeking.
+
 /**
  * Rabbit
  */
@@ -31,46 +31,31 @@ public abstract class Rabbit extends Animal{
     public void act(World world){
         super.act(world);
 
-        if(this.hunger <= 0 || this.age > this.maxAge){
-            this.die(world);
-            return;
+        //we dont exist anymore.
+        if(!world.contains(this)) return;
+
+        //home has no entrances left, so forget it
+        if(homeHole != null && homeHole.getEntrances().isEmpty()){
+            homeHole = null;
         }
 
-        this.age++;
         //wake up when it is day
         if(currentState == AnimalState.SLEEPING && world.isDay()){
             currentState = AnimalState.HOME;
         }
-        if (currentEnergy <= 0 && currentState == AnimalState.ROAMING){
+        if (currentEnergy <= 0 && currentState == AnimalState.ROAMING && homeHole != null){
             goTowardsHome(world);
             if (isOnEntrance(world)){
-                    homeHole.enter(homeHole.getEntrances().get(0), this, world);
-                    currentState = AnimalState.HOME;
+                enterHome(world);
+                currentState = AnimalState.HOME;
             }
             return;
         }
-        //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
-        if(hunger<=60 && currentState == AnimalState.ROAMING){
-            if(world.containsNonBlocking(world.getLocation(this))){
-                Object object = world.getNonBlocking(world.getLocation(this));
-                if (object instanceof Grass){
-                    this.eat((Grass)object, world);
-                    return;
-                }
-            }
-                Grass nearestGrass = Locator.locateClosest(world,world.getLocation(this), Grass.class);
-            if(world.getLocation(this).equals(world.getLocation(nearestGrass))){
-                this.eat(nearestGrass, world);
-            }else{
-                this.moveTowards(world.getLocation(nearestGrass), world);
-            }
-        
-        }
 
         if (world.isNight() && currentState == AnimalState.HOME){
-                sleep();
-                currentState = AnimalState.SLEEPING;
-                return;
+            sleep();
+            currentState = AnimalState.SLEEPING;
+            return;
         }
         else if (world.isDay() && currentState == AnimalState.HOME) {
             Entrancehole ranEntrance = homeHole.getEntrances().get(random.nextInt(homeHole.getEntrances().size()));
@@ -80,28 +65,60 @@ public abstract class Rabbit extends Animal{
             }
             currentState = AnimalState.ROAMING;
         }
-        else if(world.isNight() && currentState == AnimalState.ROAMING){ 
-            goTowardsHome(world);//TODO throws null pointer when no home hole is present
-                if (isOnEntrance(world)){
-                    homeHole.enter(homeHole.getEntrances().get(0), this, world); //TODO should NOT only use the first hole, should check which hole rabbit is on first and use that with aiding method.
-                    currentState = AnimalState.HOME;
+        else if(world.isNight() && currentState == AnimalState.ROAMING && homeHole != null){
+            goTowardsHome(world);
+            if (isOnEntrance(world)){
+                enterHome(world);
+                currentState = AnimalState.HOME;
+            }
         }
-    }
         else if (currentState == AnimalState.ROAMING){
-            this.move(world);
+            if(hunger <= 60){
+                seekFood(world);
+            }else{
+                this.move(world);
+            }
         }
         if (currentEnergy>10){ //TODO make proper
             this.useEnergy();
         }
 
-        hunger-=4 ; 
+        hunger-=4 ;
+    }
 
-        
+    //eats grass if standing on it, otherwise moves towards the nearest grass
+    private void seekFood(World world){
+        Location here = world.getLocation(this);
+        if(world.containsNonBlocking(here)){
+            Object object = world.getNonBlocking(here);
+            if (object instanceof Grass){
+                this.eat((Grass)object, world);
+                return;
+            }
+        }
+        Grass nearestGrass = Locator.locateClosest(world, here, Grass.class);
+        if(nearestGrass == null){
+            //no grass anywhere, just wander
+            this.move(world);
+            return;
+        }
+        this.moveTowards(world.getLocation(nearestGrass), world);
     }
 
     private void eat(Grass grass, World world){
         grass.getEaten(world);
         hunger = 100;
+    }
+
+    //enters the home hole through the entrance the rabbit is standing on
+    private void enterHome(World world){
+        Location here = world.getLocation(this);
+        for (Entrancehole e : homeHole.getEntrances()){
+            if (e.getlocation().equals(here)){
+                homeHole.enter(e, this, world);
+                return;
+            }
+        }
     }
 
     private boolean isOnEntrance(World world){
@@ -115,17 +132,6 @@ public abstract class Rabbit extends Animal{
         }
             return false;
     }
-
-    //TODO: GAMMEL METODE, SKAL UD.
-    // private void makehome(World world){
-    //     Rabbithole home = new Rabbithole();
-    //     homeHole = home;
-    //     home.makeEntrance(world.getLocation(this), world);
-    // }
-
-
-
-
 
     /**
      * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
@@ -154,47 +160,6 @@ public abstract class Rabbit extends Animal{
         moveTowards(closest.getlocation(),world);
     }
 
-    //TODO: GAMMEL METODE
-    // private void moveTowards(Location location,World world){ //TODO throws an exception
-    //     int LocationX = location.getX();
-    //     int LocationY = location.getY();
-    //     int thisLocationX = world.getLocation(this).getX();
-    //     int thisLocationY = world.getLocation(this).getY();
-    //     Location newloc;
-    //     if (!(LocationX - thisLocationX == 0) && !(LocationY - thisLocationY == 0)){
-    //         //move diagonally
-    //         newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY + toNearestOne(LocationY - thisLocationY));
-    //         world.move(this, newloc);
-    //     }
-    //     else if(!(LocationX - thisLocationX == 0)){
-    //             //move towards X
-    //             newloc = new Location(thisLocationX + toNearestOne(LocationX - thisLocationX),thisLocationY);
-    //             world.move(this, newloc);
-
-    //     }
-    //     else if(!(LocationY - thisLocationY == 0)){
-    //             //Move towards Y
-    //             newloc = new Location(thisLocationX,thisLocationY + toNearestOne(LocationY - thisLocationY));
-    //             world.move(this, newloc);
-    //     }
-    //     else{
-    //         //Already at target!!!
-    //     }
-    // }
-
-    //TODO FLYTTET TIL LOCATOR
-    // private int toNearestOne(int number){
-    //     if (number<0){
-    //         return -1;
-    //     }
-    //     else if(number>0){
-    //         return 1;
-    //     }
-    //     else{
-    //         return 0;
-    //     }
-    // }
-
 
     private void useEnergy(){
         if (currentEnergy <= 0) {
@@ -206,6 +171,10 @@ public abstract class Rabbit extends Animal{
 
     @Override 
     protected void die(World world){
+        //a rabbit that dies inside its hole should not keep the hole from decaying
+        if(homeHole != null){
+            homeHole.removeFromRabbitHole(this);
+        }
         world.delete(this);
     }
 

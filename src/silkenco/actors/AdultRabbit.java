@@ -60,7 +60,12 @@ public class AdultRabbit extends Rabbit implements IBreedable<AdultRabbit>{
     private void dig(World world){
         Location location = world.getLocation(this);
         if(world.containsNonBlocking(location)){
-            world.delete(world.getNonBlocking(location));
+            Object object = world.getNonBlocking(location);
+            if(!(object instanceof Grass)){
+                //cant dig on top of an entrance (or anything else that isnt grass)
+                return;
+            }
+            world.delete(object);
         }
         
         Rabbithole hole = new Rabbithole();
@@ -79,7 +84,7 @@ public class AdultRabbit extends Rabbit implements IBreedable<AdultRabbit>{
     public void reproduce(World world, AdultRabbit chosenMate){
         Set<Location> emptyLocationsSet = world.getEmptySurroundingTiles(world.getLocation(this));
         if(emptyLocationsSet.isEmpty()){
-            //TODO: NO ROOM TO REPRODUCE, HALT.
+            //NO ROOM TO REPRODUCE, HALT.
             return;
         }
         

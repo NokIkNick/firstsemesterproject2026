@@ -1,14 +1,11 @@
 package silkenco.actors;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 import silkenco.nonblocking.WolfDen;
 import silkenco.util.Locator;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import silkenco.enums.AnimalState;
 
 //Flyttet fra Rabbit animal: sleep(), useEnergy(), setHome(), getAge(), getMaxAge(), setHunger();
@@ -28,7 +25,6 @@ public abstract class Wolf extends Animal{
         isHome = false; 
         this.pack = pack;
         pack.addWolf(this);
-        this.health = health;
     }
 
     @Override
@@ -68,10 +64,10 @@ public abstract class Wolf extends Animal{
             return;
         }
         // ser om kaninen stadig er i verden
-         Location targetLocation = world.getLocation(target);
+        Location targetLocation = world.getLocation(target);
 
-         if (targetLocation == null) {
-             pack.chooseTarget(null);
+        if (targetLocation == null) {
+            pack.chooseTarget(null);
             return;
         }
 
