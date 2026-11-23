@@ -15,7 +15,7 @@ public abstract class Bear extends Animal{
     private Territory territory;
 
     public Bear(int age){
-        super(100, 100, 60, age);
+        super(100, 100, 60, age, 100);
     }
 
     public void setTerritory(Territory territory) {
