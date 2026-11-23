@@ -1,5 +1,6 @@
 package silkenco.util;
 
+import java.util.Collection;
 import java.util.Set;
 
 import itumulator.world.Location;
@@ -15,9 +16,17 @@ public class Locator {
         Set<Location> surroundingTiles = world.getSurroundingTiles(origin, world.getSize());
         surroundingTiles.add(origin);
         Set<T> foundTargets = world.getAll(target, surroundingTiles);
+        return locateClosestFromCollection(world, origin, foundTargets);
+    }
+
+    /**
+     * Finds the closest object of the given type to origin, from a collection.
+     * Returns null if none is found.
+     */
+    public static <T> T locateClosestFromCollection(World world, Location origin, Collection<T> targets){
         T closest = null;
         double lowestDist = Double.MAX_VALUE;
-        for (T object : foundTargets){
+        for (T object : targets){
             int xdiff = origin.getX() - world.getLocation(object).getX();
             int ydiff = origin.getY() - world.getLocation(object).getY();
             double distance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
