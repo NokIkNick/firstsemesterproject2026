@@ -53,6 +53,10 @@ public abstract class Animal implements Actor{
         
     }
 
+    protected void sleep(){
+        currentEnergy = energy;
+    }
+
     public abstract void act(World world);
     protected abstract void move(World world);
     protected abstract void die(World world);

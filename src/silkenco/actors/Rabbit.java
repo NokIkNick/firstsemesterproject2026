@@ -124,9 +124,6 @@ public abstract class Rabbit extends Animal{
 
 
 
-    private void sleep(){
-        currentEnergy = energy;
-    }
 
     /**
      * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
