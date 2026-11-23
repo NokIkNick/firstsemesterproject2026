@@ -66,7 +66,7 @@ public abstract class Rabbit extends Animal{
         }
 
         if (world.isNight() && isHome){
-                sleep();
+                super.sleep();
                 currentState = RabbitState.Sleeping;
                 return;
         }
@@ -134,9 +134,6 @@ public abstract class Rabbit extends Animal{
         isHome = false;
     }
 
-    private void sleep(){
-        currentEnergy = energy;
-    }
 
     @Override
     protected void move(World world){
