@@ -18,13 +18,11 @@ public abstract class Rabbit extends Animal{
 
     protected Random random = new Random();
     protected Rabbithole homeHole;
-    private boolean isHome;
     protected RabbitState currentState;
 
     public Rabbit(int age){
         super(100, 100, 60, age);
         this.homeHole = null;
-        isHome = false;
         currentState = RabbitState.Roaming;
     }
 
@@ -37,6 +35,7 @@ public abstract class Rabbit extends Animal{
         }
 
         this.age++;
+        //wake up when it is day
         if(currentState == RabbitState.Sleeping && world.isDay()){
             currentState = RabbitState.Home;
         }
@@ -49,8 +48,8 @@ public abstract class Rabbit extends Animal{
             return;
         }
         //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
-        if(hunger<=40){
-            if(currentState == RabbitState.Roaming && world.containsNonBlocking(world.getLocation(this))){
+        if(hunger<=60 && currentState == RabbitState.Roaming){
+            if(world.containsNonBlocking(world.getLocation(this))){
                 Object object = world.getNonBlocking(world.getLocation(this));
                 if (object instanceof Grass){
                     this.eat((Grass)object, world);
@@ -79,7 +78,7 @@ public abstract class Rabbit extends Animal{
             }
             currentState = RabbitState.Roaming;
         }
-        else if(world.isNight() && world.contains(this) && currentState == RabbitState.Roaming){ 
+        else if(world.isNight() && currentState == RabbitState.Roaming){ 
             goTowardsHome(world);//TODO throws null pointer when no home hole is present
                 if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world); //TODO should NOT only use the first hole, should check which hole rabbit is on first and use that with aiding method.
@@ -89,7 +88,7 @@ public abstract class Rabbit extends Animal{
         else if (currentState == RabbitState.Roaming){
             this.move(world);
         }
-        if (energy>0){
+        if (currentEnergy>10){ //TODO make proper
             this.useEnergy();
         }
 
@@ -99,7 +98,6 @@ public abstract class Rabbit extends Animal{
     }
 
     private void eat(Grass grass, World world){
-        System.out.println("VI SPISER");
         grass.getEaten(world);
         hunger = 100;
     }
@@ -124,22 +122,16 @@ public abstract class Rabbit extends Animal{
     // }
 
 
-    /**
-     * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
-     * @param world
-     */
-    private void isHomeCheck(){
-        if (homeHole.getRabbits().contains(this)){
-            isHome = true;
-            return;
-        }
-        isHome = false;
-    }
+
 
     private void sleep(){
         currentEnergy = energy;
     }
 
+    /**
+     * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
+     * @param world
+     */
     @Override
     protected void move(World world){
         Set<Location> emptyTiles = world.getEmptySurroundingTiles();
@@ -152,7 +144,9 @@ public abstract class Rabbit extends Animal{
     }
     //moves towards the closest entrance in homeHole
     private void goTowardsHome(World world){
-        Entrancehole closest = Locator.locateClosest(world, world.getLocation(this), Entrancehole.class);
+        
+
+        Entrancehole closest = Locator.locateClosestFromCollection(world, world.getLocation(this), homeHole.getEntrances());
         moveTowards(closest.getlocation(),world);
     }
 

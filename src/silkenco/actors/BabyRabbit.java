@@ -29,7 +29,9 @@ public class BabyRabbit extends Rabbit{
     private void grow(World world){ //TODO does not work if rabbit is home
         Location currentLocation = world.getLocation(this);
         world.remove(this);
-        world.setTile(currentLocation, new AdultRabbit());
+        AdultRabbit a = new AdultRabbit();
+        world.setTile(currentLocation, a);
+        a.setHome(homeHole);
         world.delete(this);
     }
     
