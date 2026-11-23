@@ -4,6 +4,7 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 import silkenco.util.Locator;
+import silkenco.enums.AnimalState;
 
 public abstract class Animal implements Actor{
     
@@ -12,13 +13,18 @@ public abstract class Animal implements Actor{
     protected int energy;
     protected int currentEnergy;
     protected int maxAge;
+    protected int health;
+    protected AnimalState currentState;
+    
 
-    public Animal(int hunger, int energy, int maxAge, int age){
+    public Animal(int hunger, int energy, int maxAge, int age, int health){
         this.hunger = hunger;
         this.age = age;
         this.energy = energy;
         this.currentEnergy = this.energy;
         this.maxAge = maxAge;
+        this.health = health; 
+        currentState = AnimalState.ROAMING;
     }
 
     //TODO throws an exception
@@ -49,7 +55,14 @@ public abstract class Animal implements Actor{
         }
     }
 
-    public abstract void act(World world);
+    public void act(World world){
+        if(this.hunger <= 0 || this.age > this.maxAge || this.health <= 0){
+            this.die(world);
+            return;
+        }
+
+        this.age++;
+    }
     protected abstract void move(World world);
     protected abstract void die(World world);
     
