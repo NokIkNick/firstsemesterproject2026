@@ -2,5 +2,6 @@ package silkenco.enums;
 
 public enum RabbitState {
     Sleeping,
-    Roaming
+    Roaming,
+    Home
 }

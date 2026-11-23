@@ -1,16 +1,15 @@
 package silkenco.actors;
 
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
-import silkenco.nonblocking.Entrancehole;
-import silkenco.nonblocking.Rabbithole;
-import silkenco.util.Locator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import silkenco.enums.RabbitState;
+import silkenco.nonblocking.Entrancehole;
+import silkenco.nonblocking.Rabbithole;
+import silkenco.util.Locator;
 //TODO, implement energy, and foodseeking.
 /**
  * Rabbit
@@ -38,17 +37,20 @@ public abstract class Rabbit extends Animal{
         }
 
         this.age++;
-        isHomeCheck();
-        if (currentEnergy <= 0 && isHome == false){
+        if(currentState == RabbitState.Sleeping && world.isDay()){
+            currentState = RabbitState.Home;
+        }
+        if (currentEnergy <= 0 && currentState == RabbitState.Roaming){
             goTowardsHome(world);
             if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world);
+                    currentState = RabbitState.Home;
             }
             return;
         }
         //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
         if(hunger<=40){
-            if(world.containsNonBlocking(world.getLocation(this))){
+            if(currentState == RabbitState.Roaming && world.containsNonBlocking(world.getLocation(this))){
                 Object object = world.getNonBlocking(world.getLocation(this));
                 if (object instanceof Grass){
                     this.eat((Grass)object, world);
@@ -56,7 +58,6 @@ public abstract class Rabbit extends Animal{
                 }
             }
                 Grass nearestGrass = Locator.locateClosest(world,world.getLocation(this), Grass.class);
-                System.out.println(world.getLocation(this).equals(world.getLocation(nearestGrass)));
             if(world.getLocation(this).equals(world.getLocation(nearestGrass))){
                 this.eat(nearestGrass, world);
             }else{
@@ -65,12 +66,12 @@ public abstract class Rabbit extends Animal{
         
         }
 
-        if (world.isNight() && isHome){
+        if (world.isNight() && currentState == RabbitState.Home){
                 sleep();
                 currentState = RabbitState.Sleeping;
                 return;
         }
-        else if (world.isDay() && isHome) {
+        else if (world.isDay() && currentState == RabbitState.Home) {
             Entrancehole ranEntrance = homeHole.getEntrances().get(random.nextInt(homeHole.getEntrances().size()));
             try{ranEntrance.leave(this, world);}
             catch(Exception e){
@@ -78,13 +79,14 @@ public abstract class Rabbit extends Animal{
             }
             currentState = RabbitState.Roaming;
         }
-        else if(world.isNight() && world.contains(this)){ //Redundant kode for læsbarhed, i det isHome altid er false her.
+        else if(world.isNight() && world.contains(this) && currentState == RabbitState.Roaming){ 
             goTowardsHome(world);//TODO throws null pointer when no home hole is present
                 if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world); //TODO should NOT only use the first hole, should check which hole rabbit is on first and use that with aiding method.
+                    currentState = RabbitState.Home;
         }
     }
-        else{
+        else if (currentState == RabbitState.Roaming){
             this.move(world);
         }
         if (energy>0){

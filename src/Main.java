@@ -10,7 +10,7 @@ public class Main {
     static FileIO fileIO = new FileIO();
 
     public static void main(String[] args) {
-        WorldInfo worldInfo = fileIO.read("t1-1c.txt");
+        WorldInfo worldInfo = fileIO.read("t1-2cde.txt");
         Program program = worldBuilder.buildProgram(worldInfo.size(), 800, 1000);
 
         worldBuilder.buildWorld(program.getWorld(), worldInfo);
