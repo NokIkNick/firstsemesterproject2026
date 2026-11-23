@@ -4,26 +4,26 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 import silkenco.nonblocking.WolfDen;
-import silkenco.enums.WolfState;
 import silkenco.util.Locator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import silkenco.enums.AnimalState;
 
+//Flyttet fra Rabbit animal: sleep(), useEnergy(), setHome(), getAge(), getMaxAge(), setHunger();
 //TODO hunt, die, spawn, spis, find flok, lav hule, gå ind i hule, reproduce (voksen), slås(voksen)
+
 public abstract class Wolf extends Animal{
     protected Random random = new Random();
-    protected WolfState currentState; 
     protected WolfDen home; 
     private boolean isHome; 
     protected WolfPack pack;
-    private int health;
-
+    
     //Husk at have pack i konstruktør i baby og voksen
-    public Wolf(int age, WolfPack pack, int health){
-        super(100, 100, 50, age);
-        currentState = WolfState.Roaming; 
+    public Wolf(int age, WolfPack pack){
+        super(100, 100, 50, age, 100);
+        currentState = AnimalState.ROAMING; 
         this.home = null;
         isHome = false; 
         this.pack = pack;
@@ -33,14 +33,15 @@ public abstract class Wolf extends Animal{
 
     @Override
     public void act(World world){
-
-        if(this.hunger <= 0 || this.age > this.maxAge || this.health <= 0){
-            this.die(world);
-            return;
-        }
-
-        this.age++;
+        super.act(world);
         
+         //if (currentEnergy <= 0 && currentState == AnimalState.ROAMING){
+           // goTowardsHome(world);
+           // if (isOnEntrance(world)){
+          //          homeHole.enter(homeHole.getEntrances().get(0), this, world);
+         //   }
+          //  return;
+
         if(pack.getTarget() != null){
             hunt(world);
         }else{
@@ -119,8 +120,13 @@ public abstract class Wolf extends Animal{
                 this.moveTowards(world.getLocation(nearestWolf), world);
              }
         
-        //evt. lav en slags "floklocation" som er midten af flokken eller noget... 
+        //LAV EN ALFA
         //for der er vel en mulighed for at de deler sig op i minigrupper alt efter hvor de spawner
         
 }
+ //TODO Opdater med Sofus' patch
+    //private void goTowardsHome(World world){
+      //  WolfDen closest = Locator.locateClosest(world, world.getLocation(this), WolfDen.class);
+      //  moveTowards(closest.getlocation(),world);
+  //  }
 }

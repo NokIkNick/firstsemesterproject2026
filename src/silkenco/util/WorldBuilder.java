@@ -12,6 +12,9 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import silkenco.actors.AdultRabbit;
 import silkenco.actors.BabyRabbit;
+import silkenco.actors.AdultWolf;
+import silkenco.actors.Wolf;
+import silkenco.actors.WolfPack;
 import silkenco.nonblocking.Entrancehole;
 import silkenco.nonblocking.Rabbithole;
 import silkenco.util.io.SpawnInfo;
@@ -34,6 +37,7 @@ public class WorldBuilder {
         program.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.gray, "rabbit-small"));
         program.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
         program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole-small"));
+        program.setDisplayInformation(AdultWolf.class, new DisplayInformation(Color.gray, "wolf"));
         return program;
     }
 
@@ -111,11 +115,15 @@ public class WorldBuilder {
             case "burrow":
                 new Rabbithole().makeEntrance(location, world);
                 break;
+            case "wolf":
+                world.setTile(location, new AdultWolf(new WolfPack()));
+                break;
+
         }
     }
 
     private boolean isKnownType(String type){
-        return type.equals("rabbit") || type.equals("grass") || type.equals("burrow");
+        return type.equals("rabbit") || type.equals("grass") || type.equals("burrow")||type.equals("wolf");
     }
 
 }

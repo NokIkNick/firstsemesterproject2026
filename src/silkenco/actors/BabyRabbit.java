@@ -4,7 +4,7 @@ package silkenco.actors;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-import silkenco.enums.RabbitState;
+import silkenco.enums.AnimalState;
 
 public class BabyRabbit extends Rabbit{
     public BabyRabbit(){
@@ -13,7 +13,7 @@ public class BabyRabbit extends Rabbit{
 
     @Override 
     public void act(World world){
-        if(super.getAge() >= 10 && super.currentState == RabbitState.Roaming){
+        if(super.getAge() >= 10 && super.currentState == AnimalState.ROAMING){
             this.grow(world);
         }else {
             super.act(world);

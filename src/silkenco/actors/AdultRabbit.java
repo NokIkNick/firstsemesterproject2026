@@ -5,7 +5,7 @@ import itumulator.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import silkenco.enums.RabbitState;
+import silkenco.enums.AnimalState;
 import silkenco.nonblocking.Rabbithole;
 
 
@@ -35,7 +35,7 @@ public class AdultRabbit extends Rabbit implements IBreedable<AdultRabbit>{
             return;
         }
 
-        if(reproductionTimer == 0 && super.currentState == RabbitState.Roaming && world.isOnTile(this)){
+        if(reproductionTimer == 0 && super.currentState == AnimalState.ROAMING && world.isOnTile(this)){
             AdultRabbit chosenMate = detectMate(world);
 
             if(chosenMate != null){

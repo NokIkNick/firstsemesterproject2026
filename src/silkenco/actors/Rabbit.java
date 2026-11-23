@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import silkenco.enums.RabbitState;
+import silkenco.enums.AnimalState;
+
 //TODO, implement energy, and foodseeking.
 /**
  * Rabbit
@@ -19,27 +20,19 @@ public abstract class Rabbit extends Animal{
 
     protected Random random = new Random();
     protected Rabbithole homeHole;
-    private boolean isHome;
-    protected RabbitState currentState;
+    
 
     public Rabbit(int age){
-        super(100, 100, 60, age);
+        super(100, 100, 60, age, 100);
         this.homeHole = null;
-        isHome = false;
-        currentState = RabbitState.Roaming;
+        currentState = AnimalState.ROAMING;
     }
 
     @Override 
     public void act(World world){
+        super.act(world);
 
-        if(this.hunger <= 0 || this.age > this.maxAge){
-            this.die(world);
-            return;
-        }
-
-        this.age++;
-        isHomeCheck();
-        if (currentEnergy <= 0 && isHome == false){
+        if (currentEnergy <= 0 && currentState == AnimalState.ROAMING){
             goTowardsHome(world);
             if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world);
@@ -65,18 +58,18 @@ public abstract class Rabbit extends Animal{
         
         }
 
-        if (world.isNight() && isHome){
+        if (world.isNight() && currentState == AnimalState.HOME){
                 sleep();
-                currentState = RabbitState.Sleeping;
+                currentState = AnimalState.SLEEPING;
                 return;
         }
-        else if (world.isDay() && isHome) {
+        else if (world.isDay() && currentState == AnimalState.HOME) {
             Entrancehole ranEntrance = homeHole.getEntrances().get(random.nextInt(homeHole.getEntrances().size()));
             try{ranEntrance.leave(this, world);}
             catch(Exception e){
                 return; //TODO VERY TEMP FIX!!!
             }
-            currentState = RabbitState.Roaming;
+            currentState = AnimalState.ROAMING;
         }
         else if(world.isNight() && world.contains(this)){ //Redundant kode for læsbarhed, i det isHome altid er false her.
             goTowardsHome(world);//TODO throws null pointer when no home hole is present
@@ -126,13 +119,6 @@ public abstract class Rabbit extends Animal{
      * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
      * @param world
      */
-    private void isHomeCheck(){
-        if (homeHole.getRabbits().contains(this)){
-            isHome = true;
-            return;
-        }
-        isHome = false;
-    }
 
     private void sleep(){
         currentEnergy = energy;
