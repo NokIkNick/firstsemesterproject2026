@@ -1,16 +1,15 @@
 package silkenco.actors;
 
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
-import silkenco.nonblocking.Entrancehole;
-import silkenco.nonblocking.Rabbithole;
-import silkenco.util.Locator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import silkenco.enums.AnimalState;
+import silkenco.nonblocking.Entrancehole;
+import silkenco.nonblocking.Rabbithole;
+import silkenco.util.Locator;
 
 //TODO, implement energy, and foodseeking.
 /**
@@ -32,15 +31,26 @@ public abstract class Rabbit extends Animal{
     public void act(World world){
         super.act(world);
 
+        if(this.hunger <= 0 || this.age > this.maxAge){
+            this.die(world);
+            return;
+        }
+
+        this.age++;
+        //wake up when it is day
+        if(currentState == AnimalState.SLEEPING && world.isDay()){
+            currentState = AnimalState.HOME;
+        }
         if (currentEnergy <= 0 && currentState == AnimalState.ROAMING){
             goTowardsHome(world);
             if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world);
+                    currentState = AnimalState.HOME;
             }
             return;
         }
         //Hunger check MÅSKE VI SKAL SE PÅ AT LAVE BETINGELSERNE OM
-        if(hunger<=40){
+        if(hunger<=60 && currentState == AnimalState.ROAMING){
             if(world.containsNonBlocking(world.getLocation(this))){
                 Object object = world.getNonBlocking(world.getLocation(this));
                 if (object instanceof Grass){
@@ -49,7 +59,6 @@ public abstract class Rabbit extends Animal{
                 }
             }
                 Grass nearestGrass = Locator.locateClosest(world,world.getLocation(this), Grass.class);
-                System.out.println(world.getLocation(this).equals(world.getLocation(nearestGrass)));
             if(world.getLocation(this).equals(world.getLocation(nearestGrass))){
                 this.eat(nearestGrass, world);
             }else{
@@ -71,16 +80,17 @@ public abstract class Rabbit extends Animal{
             }
             currentState = AnimalState.ROAMING;
         }
-        else if(world.isNight() && world.contains(this)){ //Redundant kode for læsbarhed, i det isHome altid er false her.
+        else if(world.isNight() && currentState == AnimalState.ROAMING){ 
             goTowardsHome(world);//TODO throws null pointer when no home hole is present
                 if (isOnEntrance(world)){
                     homeHole.enter(homeHole.getEntrances().get(0), this, world); //TODO should NOT only use the first hole, should check which hole rabbit is on first and use that with aiding method.
+                    currentState = AnimalState.HOME;
         }
     }
-        else{
+        else if (currentState == AnimalState.ROAMING){
             this.move(world);
         }
-        if (energy>0){
+        if (currentEnergy>10){ //TODO make proper
             this.useEnergy();
         }
 
@@ -90,7 +100,6 @@ public abstract class Rabbit extends Animal{
     }
 
     private void eat(Grass grass, World world){
-        System.out.println("VI SPISER");
         grass.getEaten(world);
         hunger = 100;
     }
@@ -115,12 +124,15 @@ public abstract class Rabbit extends Animal{
     // }
 
 
+
+
+
     /**
      * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
      * @param world
      */
 
-    private void sleep(){
+    public void sleep(){
         currentEnergy = energy;
     }
 
@@ -136,7 +148,9 @@ public abstract class Rabbit extends Animal{
     }
     //moves towards the closest entrance in homeHole
     private void goTowardsHome(World world){
-        Entrancehole closest = Locator.locateClosest(world, world.getLocation(this), Entrancehole.class);
+        
+
+        Entrancehole closest = Locator.locateClosestFromCollection(world, world.getLocation(this), homeHole.getEntrances());
         moveTowards(closest.getlocation(),world);
     }
 

@@ -6,15 +6,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import silkenco.actors.Grass;
+import silkenco.actors.Territory;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import silkenco.actors.AdultBear;
 import silkenco.actors.AdultRabbit;
 import silkenco.actors.BabyRabbit;
 import silkenco.actors.AdultWolf;
 import silkenco.actors.Wolf;
 import silkenco.actors.WolfPack;
+import silkenco.actors.Bear;
 import silkenco.nonblocking.Entrancehole;
 import silkenco.nonblocking.Rabbithole;
 import silkenco.util.io.SpawnInfo;
@@ -38,6 +41,7 @@ public class WorldBuilder {
         program.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
         program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole-small"));
         program.setDisplayInformation(AdultWolf.class, new DisplayInformation(Color.gray, "wolf"));
+        program.setDisplayInformation(AdultBear.class, new DisplayInformation(Color.BLACK, "bear"));
         return program;
     }
 
@@ -119,11 +123,18 @@ public class WorldBuilder {
                 world.setTile(location, new AdultWolf(new WolfPack()));
                 break;
 
+            case "bear":
+                Bear bear = new AdultBear();
+                Territory territory = new Territory(location, bear, 2, world);
+                bear.setTerritory(territory);
+                world.setTile(location, bear);
+                break;
         }
     }
 
     private boolean isKnownType(String type){
-        return type.equals("rabbit") || type.equals("grass") || type.equals("burrow")||type.equals("wolf");
+        return type.equals("rabbit") || type.equals("grass") || type.equals("burrow")||type.equals("wolf")|| type.equals("bear");
+        
     }
 
 }

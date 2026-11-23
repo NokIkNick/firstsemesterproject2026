@@ -27,7 +27,6 @@ public abstract class Animal implements Actor{
         currentState = AnimalState.ROAMING;
     }
 
-    //TODO throws an exception
     public void moveTowards(Location location, World world){ 
         int LocationX = location.getX();
         int LocationY = location.getY();
@@ -37,22 +36,31 @@ public abstract class Animal implements Actor{
         if (!(LocationX - thisLocationX == 0) && !(LocationY - thisLocationY == 0)){
             //move diagonally
             newloc = new Location(thisLocationX + Locator.toNearestOne(LocationX - thisLocationX),thisLocationY + Locator.toNearestOne(LocationY - thisLocationY));
-            world.move(this, newloc);
+            
         }
         else if(!(LocationX - thisLocationX == 0)){
                 //move towards X
                 newloc = new Location(thisLocationX + Locator.toNearestOne(LocationX - thisLocationX),thisLocationY);
-                world.move(this, newloc);
+                
 
         }
         else if(!(LocationY - thisLocationY == 0)){
                 //Move towards Y
                 newloc = new Location(thisLocationX,thisLocationY + Locator.toNearestOne(LocationY - thisLocationY));
-                world.move(this, newloc);
+                
         }
         else{
             //Already at target!!!
+            newloc = world.getLocation(this);
         }
+        if (world.isTileEmpty(newloc)){
+            world.move(this, newloc);
+        }
+        
+    }
+
+    protected void sleep(){
+        currentEnergy = energy;
     }
 
     public void act(World world){
