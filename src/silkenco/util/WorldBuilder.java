@@ -37,11 +37,11 @@ public class WorldBuilder {
     public Program buildProgram(int size, int displaySize, int delay){
         Program program = new Program(size, displaySize, delay);
         program.setDisplayInformation(AdultRabbit.class, new DisplayInformation(Color.darkGray, "rabbit-large"));
-        program.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.gray, "rabbit-small"));
+        program.setDisplayInformation(BabyRabbit.class, new DisplayInformation(Color.red, "rabbit-small"));
         program.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
         program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole-small"));
         program.setDisplayInformation(AdultWolf.class, new DisplayInformation(Color.gray, "wolf"));
-        program.setDisplayInformation(AdultBear.class, new DisplayInformation(Color.BLACK, "bear"));
+        program.setDisplayInformation(AdultBear.class, new DisplayInformation(Color.yellow, "bear"));
         return program;
     }
 
@@ -122,7 +122,6 @@ public class WorldBuilder {
             case "wolf":
                 world.setTile(location, new AdultWolf(new WolfPack()));
                 break;
-
             case "bear":
                 Bear bear = new AdultBear();
                 Territory territory = new Territory(location, bear, 2, world);
