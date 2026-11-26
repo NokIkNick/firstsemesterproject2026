@@ -15,6 +15,8 @@ public abstract class Animal implements Actor{
     protected int maxAge;
     protected int health;
     protected AnimalState currentState;
+    protected AnimalState prevState;
+    protected boolean isAlive;
     
 
     public Animal(int hunger, int energy, int maxAge, int age, int health){
@@ -24,7 +26,9 @@ public abstract class Animal implements Actor{
         this.currentEnergy = this.energy;
         this.maxAge = maxAge;
         this.health = health; 
-        currentState = AnimalState.ROAMING;
+        this.currentState = AnimalState.ROAMING;
+        this.prevState = this.currentState;
+        this.isAlive = true;
     }
 
     public void moveTowards(Location location, World world){ 
@@ -102,6 +106,18 @@ public abstract class Animal implements Actor{
 
     public int getHunger() {
         return hunger;
+    }
+
+    public void setCurrentState(AnimalState currentState) {
+        this.currentState = currentState;
+    }
+
+    public AnimalState getCurrentState() {
+        return currentState;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 
     protected abstract void move(World world);

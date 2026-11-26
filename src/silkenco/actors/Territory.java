@@ -1,6 +1,7 @@
 package silkenco.actors;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import itumulator.world.Location;
@@ -28,16 +29,28 @@ public class Territory {
 
     private Set<Location> fillTerritorySet(World world, int range){
         Set<Location> surroundingTerritory = world.getSurroundingTiles(this.center, range);
-        surroundingTerritory.add(center);
+        surroundingTerritory.add(this.center);
         return surroundingTerritory;
     }
 
-    public Location isInTerritory(World world, Object o){
-        Location location = new Location(0, 0);
-        return location;
-        
+    public Set<Animal> scanTerritory(World world, List<Class<? extends Animal>> prey){
+        Set<Animal> found = new HashSet<>();
+        for (Class<? extends Animal> preyClass : prey) {
+            found.addAll(world.getAll(preyClass, territoryLocations));
+        }
+        found.remove(owner);
+        return found;
     }
 
+    public boolean isInTerritory(World world, Object object){
+        for (Location location : territoryLocations) {
+            return object.equals(world.getTile(location));
+        }
+        
+        return false;
+    }
+
+    
     public Set<Location> getTerritoryLocations() {
         return territoryLocations;
     }

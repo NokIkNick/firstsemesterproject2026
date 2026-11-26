@@ -6,6 +6,7 @@ import java.util.Random;
 
 import itumulator.world.Location;
 import itumulator.world.World;
+import silkenco.enums.AnimalState;
 
 public abstract class Bear extends Animal{
 
@@ -26,12 +27,27 @@ public abstract class Bear extends Animal{
 
     @Override 
     public void act(World world){
+        this.age++;
+
         if(this.hunger <= 0 || this.age > this.maxAge){
             this.die(world);
             return;
         }
 
-        this.age++;
+        if(world.isNight() && currentState != AnimalState.SLEEPING){
+            prevState = currentState;
+            currentState = AnimalState.SLEEPING;
+        }
+
+        if(world.isDay() && currentState == AnimalState.SLEEPING){
+            currentState = prevState;
+            prevState = currentState;
+        }
+
+        if(currentState == AnimalState.SLEEPING){
+            this.sleep();
+            return;
+        }
 
         this.move(world);
     }

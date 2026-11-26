@@ -163,6 +163,7 @@ public abstract class Rabbit extends Animal{
         if(homeHole != null){
             homeHole.removeFromRabbitHole(this);
         }
+        this.isAlive = false;
         world.delete(this);
     }
 
