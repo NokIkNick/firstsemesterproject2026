@@ -109,6 +109,7 @@ public abstract class Rabbit extends Animal{
         grass.getEaten(world);
         hunger = 100;
     }
+    
 
     //enters the home hole through the entrance the rabbit is standing on
     private void enterHome(World world){

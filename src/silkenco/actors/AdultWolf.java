@@ -11,7 +11,7 @@ private int diggingCooldown;
     public AdultWolf(WolfPack pack){
         super(1, pack);
         this.reproductionTimer = 0;
-         this.diggingCooldown = 0;
+        this.diggingCooldown = 0;
     }
     @Override
     public void act(World world){

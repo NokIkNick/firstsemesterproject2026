@@ -32,6 +32,12 @@ public class Territory {
         return surroundingTerritory;
     }
 
+    public Location isInTerritory(World world, Object o){
+        Location location = new Location(0, 0);
+        return location;
+        
+    }
+
     public Set<Location> getTerritoryLocations() {
         return territoryLocations;
     }

@@ -1,12 +1,30 @@
 package silkenco.actors;
 
+import java.util.List;
+
 import itumulator.world.World;
 
 public class AdultBear extends Bear implements IBreedable<AdultBear>{
     
+    private List<Class<? extends Animal>> huntingTargets = List.of(Rabbit.class, Wolf.class);
+    private Animal currentTarget = null;
+
     public AdultBear(){
         super(1);
     }
+
+    public void huntTarget(World world){
+
+   }
+
+   public void locateTarget(World world){
+
+   }
+
+   public void findNewTarget(World world){
+        
+   }
+
 
     @Override 
     public void act(World world){
