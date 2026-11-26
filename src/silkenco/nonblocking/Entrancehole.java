@@ -15,7 +15,6 @@ public class Entrancehole implements NonBlocking, Actor{
         time = 0;
     }
 
-
     //adds an actor to the hole and removes them from world.
     public void Enter(Actor actor, World world){
         resetTimer();
@@ -40,7 +39,14 @@ public class Entrancehole implements NonBlocking, Actor{
         doDeterioration(world);
     }
 
-    public void doDeterioration(World world){
+    /** sees if the entrancehole is occupied
+    *  @return true if the entrancehole space contains a blocking entity
+    */
+    public boolean isOccupied(World world){
+    return !world.isTileEmpty(location);
+   }
+
+    private void doDeterioration(World world){
         //does not decay while there are rabbits inside the hole
         if (!hole.getRabbits().isEmpty()){
             return;
@@ -56,4 +62,7 @@ public class Entrancehole implements NonBlocking, Actor{
     private void resetTimer(){
         time = 0;
     }
+
+
+
 }

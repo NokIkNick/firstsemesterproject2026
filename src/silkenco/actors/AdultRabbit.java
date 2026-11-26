@@ -59,15 +59,6 @@ public class AdultRabbit extends Rabbit implements IBreedable<AdultRabbit>{
     
     private void dig(World world){
         Location location = world.getLocation(this);
-        if(world.containsNonBlocking(location)){
-            Object object = world.getNonBlocking(location);
-            if(!(object instanceof Grass)){
-                //cant dig on top of an entrance (or anything else that isnt grass)
-                return;
-            }
-            world.delete(object);
-        }
-        
         Rabbithole hole = new Rabbithole();
         super.homeHole = hole;
         hole.makeEntrance(location, world);

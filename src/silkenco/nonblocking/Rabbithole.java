@@ -2,6 +2,7 @@ package silkenco.nonblocking;
 import itumulator.simulator.*;
 import itumulator.world.*;
 import java.util.*;
+import silkenco.actors.Grass;
 
 public class Rabbithole implements NonBlocking{
     private Boolean hasTunnel;
@@ -16,11 +17,50 @@ public class Rabbithole implements NonBlocking{
     }
 
     public void makeEntrance(Location location, World world){
+        if(world.containsNonBlocking(location)){
+            Object object = world.getNonBlocking(location);
+                if(!(object instanceof Grass)){
+                    //cant dig on top of an entrance (or anything else that isnt grass)
+                 return;
+                }
+            world.delete(object);
+        }
         Entrancehole e = new Entrancehole (location,this);
         world.setTile(location, e);
         entrances.add(e);
         tunnelCheck();
     }
+
+    public void makeRanEntrance(Location location, World world, int range){
+        Random random = new Random();
+        while (true) { 
+            int locationx = location.getX();
+            int locationy = location.getY();
+            int movex = random.nextInt(range);
+            int movey = random.nextInt(range);
+            //50% chance to add or subtract range for x and y.
+            if (random.nextBoolean()){
+                locationx = locationx-movex;
+            }
+            else{
+                locationx = locationx+movex;
+            }
+            if (random.nextBoolean()){
+                locationy = locationy-movey;
+            }
+            else{
+                locationy = locationy+movey;
+            }
+            //if location is not out of bounds
+            if (!(world.getSize()<locationx||world.getSize()<locationy||locationy<0||locationx<0)){
+                //makes the new hole
+                Location holeLoc = new Location(locationx,locationy);
+                makeEntrance(holeLoc, world);
+                break;
+            }
+        }
+    }
+
     public void removeEntrance(Entrancehole e){
         entrances.remove(e);
         tunnelCheck();

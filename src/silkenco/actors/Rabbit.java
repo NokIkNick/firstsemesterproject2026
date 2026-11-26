@@ -57,13 +57,34 @@ public abstract class Rabbit extends Animal{
             currentState = AnimalState.SLEEPING;
             return;
         }
+
+        //Leaves in the morning or makes new hole
         else if (world.isDay() && currentState == AnimalState.HOME) {
             Entrancehole ranEntrance = homeHole.getEntrances().get(random.nextInt(homeHole.getEntrances().size()));
-            try{ranEntrance.leave(this, world);}
-            catch(Exception e){
-                return; //TODO VERY TEMP FIX!!!
+            if (!ranEntrance.isOccupied(world)){
+                ranEntrance.leave(this, world);
+                currentState = AnimalState.ROAMING;
             }
-            currentState = AnimalState.ROAMING;
+            else{
+                //50% chance to make a new hole and leave through it
+                if (random.nextInt(2)==1 && this instanceof AdultRabbit){
+                    List<Entrancehole> oldEntrances = homeHole.getEntrances();
+                    //make random entrance
+                    homeHole.makeRanEntrance(ranEntrance.getlocation(), world, 2);
+                    List<Entrancehole> newEntrances = homeHole.getEntrances();
+                    for (Entrancehole e : oldEntrances) {
+                        if (!newEntrances.contains(e)){
+                            e.leave(this, world);
+                        }
+                        
+                    }
+                    
+                }
+                else{
+                    return;
+                }
+            }
+            
         }
         else if(world.isNight() && currentState == AnimalState.ROAMING && homeHole != null){
             goTowardsHome(world);
