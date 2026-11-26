@@ -137,11 +137,6 @@ public abstract class Rabbit extends Animal{
      * Tries to move the Rabbit, by checking the empty surrounding tiles. If they are empty, the Rabbit moves randomly.
      * @param world
      */
-
-    public void sleep(){
-        currentEnergy = energy;
-    }
-
     @Override
     protected void move(World world){
         Set<Location> emptyTiles = world.getEmptySurroundingTiles();
@@ -160,14 +155,6 @@ public abstract class Rabbit extends Animal{
         moveTowards(closest.getlocation(),world);
     }
 
-
-    private void useEnergy(){
-        if (currentEnergy <= 0) {
-            throw new RuntimeException("Could not reduce energy, due to energy being too low."); //TODO make proper exception
-        }
-        currentEnergy = currentEnergy - 10;
-
-    }
 
     @Override 
     protected void die(World world){

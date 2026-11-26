@@ -71,6 +71,39 @@ public abstract class Animal implements Actor{
 
         this.age++;
     }
+
+    public void useEnergy(){
+        if (currentEnergy <= 0) {
+            throw new RuntimeException("Could not reduce energy, due to energy being too low."); //TODO make proper exception
+        }
+        currentEnergy = currentEnergy - 10;
+
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    public void setHunger(int hunger) {
+        this.hunger = hunger;
+    }
+
+    public int getHunger() {
+        return hunger;
+    }
+
     protected abstract void move(World world);
     protected abstract void die(World world);
     

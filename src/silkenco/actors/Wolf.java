@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 import silkenco.enums.AnimalState;
 
-//Flyttet fra Rabbit animal: sleep(), useEnergy(), setHome(), getAge(), getMaxAge(), setHunger();
 //TODO hunt, die, spawn, spis, find flok, lav hule, gå ind i hule, reproduce (voksen), slås(voksen)
 
 public abstract class Wolf extends Animal{
