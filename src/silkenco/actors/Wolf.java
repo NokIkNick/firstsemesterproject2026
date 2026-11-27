@@ -15,10 +15,13 @@ public abstract class Wolf extends Animal{
     protected WolfDen home; 
     private boolean isHome; 
     protected WolfPack pack;
-    
+
+    //max age measured in in-game days
+    private static final int MAX_AGE_DAYS = 15;
+
     //Husk at have pack i konstruktør i baby og voksen
     public Wolf(int age, WolfPack pack){
-        super(100, 100, 50, age, 100);
+        super(100, 100, MAX_AGE_DAYS * World.getTotalDayDuration(), age, 100);
         currentState = AnimalState.ROAMING; 
         this.home = null;
         isHome = false; 
@@ -48,6 +51,7 @@ public abstract class Wolf extends Animal{
         }
         
     }
+
 
     public void hunt(World world){
         Rabbit target = pack.getTarget();

@@ -43,11 +43,7 @@ public class Territory {
     }
 
     public boolean isInTerritory(World world, Object object){
-        for (Location location : territoryLocations) {
-            return object.equals(world.getTile(location));
-        }
-        
-        return false;
+        return territoryLocations.contains(world.getLocation(object));
     }
 
     

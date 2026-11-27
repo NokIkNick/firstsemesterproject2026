@@ -13,8 +13,11 @@ public abstract class Bear extends Animal{
     protected Random random = new Random();
     private Territory territory;
 
+    //max age measured in in-game days
+    private static final int MAX_AGE_DAYS = 20;
+
     public Bear(int age){
-        super(100, 100, 60, age, 100);
+        super(100, 100, MAX_AGE_DAYS * World.getTotalDayDuration(), age, 100);
     }
 
     public void setTerritory(Territory territory) {
@@ -28,11 +31,13 @@ public abstract class Bear extends Animal{
     @Override 
     public void act(World world){
         this.age++;
-
+        
         if(this.hunger <= 0 || this.age > this.maxAge){
             this.die(world);
             return;
         }
+
+        this.hunger--;
 
         if(world.isNight() && currentState != AnimalState.SLEEPING){
             prevState = currentState;
@@ -49,6 +54,17 @@ public abstract class Bear extends Animal{
             return;
         }
 
+        //only reached if the bear is alive and awake
+        this.behave(world);
+    }
+
+    /**
+     * What the bear does on a normal step. Subclasses override this instead of act(),
+     * so the upkeep in act() (aging, hunger, dying, sleeping) always runs first.
+     * Default: wander around the territory.
+     * @param world
+     */
+    protected void behave(World world){
         this.move(world);
     }
 

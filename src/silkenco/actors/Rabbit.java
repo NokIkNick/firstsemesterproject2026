@@ -19,10 +19,12 @@ public abstract class Rabbit extends Animal{
 
     protected Random random = new Random();
     protected Rabbithole homeHole;
-    
+
+    //max age measured in in-game days
+    private static final int MAX_AGE_DAYS = 10;
 
     public Rabbit(int age){
-        super(100, 100, 60, age, 100);
+        super(100, 100, MAX_AGE_DAYS * World.getTotalDayDuration(), age, 100);
         this.homeHole = null;
         currentState = AnimalState.ROAMING;
     }

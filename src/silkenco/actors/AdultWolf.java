@@ -24,8 +24,11 @@ private int diggingCooldown;
 
     }
 
-    public void die(World world){
-
+    @Override
+    protected void die(World world) {
+        super.isAlive = false;
+        world.delete(this);
+        
     }
 
     private void dig(World world){

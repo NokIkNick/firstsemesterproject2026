@@ -95,7 +95,7 @@ public class WorldBuilder {
             for (int y = 0; y < world.getSize(); y++) {
                 Location location = new Location(x, y);
                 boolean free;
-                if(type.equals("rabbit")){
+                if(type.equals("rabbit") || type.equals("wolf") || type.equals("bear")){
                     free = world.isTileEmpty(location);
                 }else{
                     free = !world.containsNonBlocking(location);
