@@ -1,23 +1,24 @@
 package silkenco.util;
 
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.Program;
+import itumulator.world.Location;
+import itumulator.world.World;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import silkenco.actors.Grass;
-import silkenco.actors.Territory;
-import itumulator.executable.DisplayInformation;
-import itumulator.executable.Program;
-import itumulator.world.Location;
-import itumulator.world.World;
 import silkenco.actors.AdultBear;
 import silkenco.actors.AdultRabbit;
-import silkenco.actors.BabyRabbit;
 import silkenco.actors.AdultWolf;
-import silkenco.actors.Wolf;
-import silkenco.actors.WolfPack;
+import silkenco.actors.BabyRabbit;
 import silkenco.actors.Bear;
+import silkenco.actors.Carcass;
+import silkenco.actors.Grass;
+import silkenco.actors.Mushroom;
+import silkenco.actors.Territory;
+import silkenco.actors.WolfPack;
 import silkenco.nonblocking.Entrancehole;
 import silkenco.nonblocking.Rabbithole;
 import silkenco.util.io.SpawnInfo;
@@ -42,6 +43,8 @@ public class WorldBuilder {
         program.setDisplayInformation(Entrancehole.class, new DisplayInformation(Color.black, "hole-small"));
         program.setDisplayInformation(AdultWolf.class, new DisplayInformation(Color.gray, "wolf"));
         program.setDisplayInformation(AdultBear.class, new DisplayInformation(Color.yellow, "bear"));
+        program.setDisplayInformation(Carcass.class, new DisplayInformation(Color.magenta, "carcass"));
+        program.setDisplayInformation(Mushroom.class, new DisplayInformation(Color.pink, "fungi"));
         return program;
     }
 

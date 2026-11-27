@@ -192,11 +192,21 @@ public abstract class Rabbit extends Animal{
 
     @Override 
     protected void die(World world){
-        //a rabbit that dies inside its hole should not keep the hole from decaying
+        //a rabbit that dies inside its hole should not stay inside the hole as a live rabbit
         if(homeHole != null){
             homeHole.removeFromRabbitHole(this);
         }
-        world.delete(this);
+
+        //only a rabbit that dies outside should become a carcass.
+        if (currentState == AnimalState.ROAMING){
+            Location currentLoc = world.getLocation(this);
+            world.delete(this);
+            //TODO Change back to false, true by default for testing purposes
+            world.setTile(currentLoc, new Carcass(20, true));
+        }
+        else{
+            world.delete(this);
+        }
     }
 
     public void setHome(Rabbithole r){
